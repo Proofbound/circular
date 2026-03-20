@@ -1,0 +1,438 @@
+/* ============================================================
+   Karam & Sprague's Fortnightly Circular — Main Stylesheet
+   Aesthetic: Victorian periodical, warm sepia parchment
+   ============================================================ */
+
+/* -- Fonts -------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+/* -- Tokens ------------------------------------------------- */
+:root {
+  --cream:      #ede5d0;        /* warm page background */
+  --parchment:  #d4c09a;        /* matches masthead image paper */
+  --ink:        #1a1208;        /* near-black warm brown */
+  --ink-muted:  #3d3020;
+  --ink-light:  #6b5840;
+  --rule:       #a89070;        /* warm sepia rule */
+  --rule-light: #c8b898;
+  --accent:     #6b4418;        /* deep warm brown — links & labels */
+  --accent-mid: #8b5a28;
+  --accent-pale:#e8d8c0;
+  --gold:       #b89030;
+  --column:     680px;
+  --wide:       960px;
+  --font-serif: 'Source Serif 4', 'Georgia', serif;
+  --font-display:'Playfair Display', 'Georgia', serif;
+  --font-sans:  'Source Sans 3', 'Helvetica Neue', sans-serif;
+}
+
+/* -- Reset -------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 18px; scroll-behavior: smooth; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-mid); text-decoration: underline; }
+
+/* -- Layout helpers ----------------------------------------- */
+.container {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.rule { border: none; border-top: 1px solid var(--rule); margin: 2rem 0; }
+.rule--heavy { border-top: 3px solid var(--ink); margin: 1.5rem 0; }
+.rule--accent { border-top: 3px solid var(--accent); }
+
+/* ============================================================
+   MASTHEAD — Victorian Newspaper Style
+   ============================================================ */
+.masthead {
+  background: var(--parchment);
+  text-align: center;
+  border-bottom: 3px solid var(--ink);
+}
+.masthead__image-wrap {
+  display: block;
+  line-height: 0;
+}
+.masthead__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+.masthead__meta-bar {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--cream);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.6rem 1rem;
+  background: var(--ink);
+  flex-wrap: wrap;
+}
+
+/* -- Top nav (issue selector / sections) -------------------- */
+.nav-bar {
+  background: var(--parchment);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.nav-bar__inner {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+}
+.nav-bar__inner a {
+  display: block;
+  padding: 0.7rem 1.2rem;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  transition: border-color 0.15s, color 0.15s;
+}
+.nav-bar__inner a:hover,
+.nav-bar__inner a.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  text-decoration: none;
+}
+
+/* ============================================================
+   HERO / FEATURE ROW
+   ============================================================ */
+.hero {
+  padding: 3.5rem 0 2.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+.hero__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+.hero__lead {
+  border-right: 1px solid var(--rule);
+  padding-right: 3rem;
+}
+.hero__secondary {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ============================================================
+   ARTICLE CARDS — generic
+   ============================================================ */
+.article-card {}
+.article-card__section {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.article-card__title {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 0.5rem;
+}
+.article-card__title a { color: var(--ink); }
+.article-card__title a:hover { color: var(--accent); text-decoration: none; }
+.article-card--hero .article-card__title { font-size: 2.4rem; }
+.article-card__byline {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--ink-light);
+  margin-bottom: 0.5rem;
+}
+.article-card__dek {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+.article-card--small .article-card__title { font-size: 1.1rem; }
+.article-card--small .article-card__dek { font-size: 0.88rem; }
+
+/* -- Divider between small cards ---------------------------- */
+.article-card + .article-card {
+  border-top: 1px solid var(--rule-light);
+  padding-top: 1.5rem;
+}
+
+/* ============================================================
+   SECTION BLOCKS (index page)
+   ============================================================ */
+.section-block {
+  padding: 3rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.section-block:last-child { border-bottom: none; }
+.section-block__header {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.section-block__name {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.section-block__rule {
+  flex: 1;
+  border-top: 1px solid var(--rule);
+  margin-bottom: 3px;
+}
+.section-block__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+.section-block__grid--two { grid-template-columns: repeat(2, 1fr); gap: 3rem; }
+.section-block__grid .article-card { border-right: 1px solid var(--rule-light); padding-right: 2rem; }
+.section-block__grid .article-card:last-child { border-right: none; padding-right: 0; }
+.section-block__grid--two .article-card { border-right: 1px solid var(--rule); padding-right: 3rem; }
+.section-block__grid--two .article-card:last-child { border-right: none; padding-right: 0; }
+
+/* ============================================================
+   TABLE OF CONTENTS (sidebar-style on index)
+   ============================================================ */
+.toc-sidebar {
+  background: var(--parchment);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  padding: 1.5rem;
+  font-family: var(--font-sans);
+}
+.toc-sidebar__title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 1rem;
+}
+.toc-sidebar__section {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 1rem 0 0.4rem;
+}
+.toc-sidebar__list { list-style: none; }
+.toc-sidebar__list li {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--rule-light);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+.toc-sidebar__list li:last-child { border-bottom: none; }
+.toc-sidebar__list a { color: var(--ink-muted); }
+.toc-sidebar__list a:hover { color: var(--accent); text-decoration: none; }
+
+/* ============================================================
+   MAIN LAYOUT (index: content + sidebar)
+   ============================================================ */
+.page-layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 3.5rem;
+  padding: 3rem 0 4rem;
+  align-items: start;
+}
+.page-layout__sidebar { position: sticky; top: 1.5rem; }
+
+/* ============================================================
+   ARTICLE PAGE
+   ============================================================ */
+.article-page { padding: 3rem 0 5rem; }
+.article-header { max-width: var(--column); margin: 0 auto 2.5rem; text-align: center; }
+.article-header__section {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
+}
+.article-header__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+  color: var(--ink);
+}
+.article-header__dek {
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--ink-muted);
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+.article-header__byline {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--ink-light);
+  letter-spacing: 0.03em;
+}
+.article-header__byline strong { color: var(--ink-muted); }
+
+.article-body {
+  max-width: var(--column);
+  margin: 0 auto;
+}
+.article-body p {
+  margin-bottom: 1.4rem;
+  font-size: 1.05rem;
+}
+.article-body h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 2.5rem 0 0.8rem;
+  line-height: 1.3;
+  color: var(--ink);
+}
+.article-body h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 2rem 0 0.6rem;
+  color: var(--ink);
+}
+.article-body em { font-style: italic; }
+.article-body strong { font-weight: 600; }
+.article-body blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 2rem 0;
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  font-style: italic;
+  color: var(--ink-muted);
+  font-size: 1.1rem;
+}
+.article-body a { color: var(--accent); }
+.article-body hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 2.5rem 0;
+}
+
+/* Figures & captions */
+.article-figure {
+  margin: 2.5rem 0;
+}
+.article-figure--lead {
+  margin: 0 0 2.5rem;
+}
+.article-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.article-figure figcaption {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  margin-top: 0.6rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* Drop cap on first paragraph */
+.article-body > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-size: 4.2rem;
+  font-weight: 900;
+  float: left;
+  line-height: 0.8;
+  margin: 0.1em 0.08em -0.1em 0;
+  color: var(--accent);
+}
+
+/* Back link */
+.article-nav {
+  max-width: var(--column);
+  margin: 0 auto 2rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.article-nav a { color: var(--ink-light); }
+.article-nav a:hover { color: var(--accent); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--ink);
+  color: var(--rule);
+  padding: 2.5rem 0;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  border-top: 4px solid var(--accent);
+}
+footer a { color: var(--rule); }
+footer a:hover { color: var(--cream); }
+.footer__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer__brand {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--cream);
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.text-muted { color: var(--ink-light); }
+.text-small { font-size: 0.85rem; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 800px) {
+  .hero__grid { grid-template-columns: 1fr; gap: 2rem; }
+  .hero__lead { border-right: none; padding-right: 0; border-bottom: 1px solid var(--rule); padding-bottom: 2rem; }
+  .page-layout { grid-template-columns: 1fr; }
+  .page-layout__sidebar { position: static; }
+  .section-block__grid { grid-template-columns: 1fr; }
+  .section-block__grid .article-card { border-right: none; padding-right: 0; border-bottom: 1px solid var(--rule-light); padding-bottom: 1.5rem; }
+  .section-block__grid--two { grid-template-columns: 1fr; }
+  .section-block__grid--two .article-card { border-right: none; padding-right: 0; }
+}
+@media (max-width: 500px) {
+  html { font-size: 16px; }
+  .masthead__meta-bar { gap: 1rem; font-size: 0.65rem; padding: 0.5rem; }
+}
