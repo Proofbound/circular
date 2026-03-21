@@ -22,13 +22,31 @@
     </div>
   </header>
 
+  <nav class="nav-bar" aria-label="Navigation">
+    <div class="container">
+      <div class="nav-bar__inner">
+        <a href="../index.html">All Articles</a>
+        <div class="nav-bar__actions">
+          <a href="#">Sign in</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
   <main>
     <div class="container">
-      <article class="article-page">
+      <article class="article-page" data-comments="on">
 
         <nav class="article-nav">
           <a href="../index.html">&larr; Back to the Circular</a>
         </nav>
+
+        <div class="subscribe-banner">
+          <div class="subscribe-banner__text">
+            <strong>Subscribe to the Circular</strong> — New issues delivered fortnightly.
+          </div>
+          <a href="#" class="btn btn--sm btn--filled">Subscribe</a>
+        </div>
 
         <header class="article-header">
           <div class="article-header__section">Analysis &middot; Geopolitics</div>
@@ -111,6 +129,40 @@
 
         </div><!-- /.article-body -->
 
+        <!-- Share controls -->
+        <div class="share-controls">
+          <span class="share-controls__label">Share</span>
+          <a href="#" class="btn btn--sm share-controls__x">X</a>
+          <a href="#" class="btn btn--sm share-controls__fb">Facebook</a>
+          <button type="button" class="btn btn--sm share-controls__copy">Copy link</button>
+        </div>
+
+        <!-- Article continuation -->
+        <div class="article-continuation">
+          <nav class="article-continuation__nav" aria-label="More in this issue">
+            <a href="the-internet-nobody-planned.html" class="article-continuation__link article-continuation__link--prev">
+              <small>&larr; Previous</small>
+              <span>The Internet Nobody Planned</span>
+            </a>
+            <a href="when-every-llm-says-buy.html" class="article-continuation__link article-continuation__link--next">
+              <small>Next &rarr;</small>
+              <span>When Every LLM Says &ldquo;Buy&rdquo;</span>
+            </a>
+          </nav>
+
+          <div class="article-nextup">
+            <div class="article-nextup__label">Next Up</div>
+            <h3 class="article-nextup__title"><a href="when-every-llm-says-buy.html">When Every LLM Says &ldquo;Buy&rdquo;</a></h3>
+            <p class="article-nextup__dek">Agentic AI can now synthesize a full analyst report in minutes. That exposes something the industry has long obscured: the analytical layer was never where the real alpha lived.</p>
+          </div>
+        </div>
+
+        <!-- Comments placeholder -->
+        <div class="comments-placeholder">
+          <div class="comments-placeholder__title">Discussion</div>
+          <p>Comments are not yet available. Check back soon.</p>
+        </div>
+
       </article>
     </div>
   </main>
@@ -124,5 +176,6 @@
     </div>
   </footer>
 
+  <script src="../js/circular.js" defer></script>
 </body>
 </html>

@@ -32,9 +32,22 @@
         <a href="#analysis" class="active">Analysis</a>
         <a href="#light-reading">Light Reading</a>
         <a href="#about">About</a>
+        <div class="nav-bar__actions">
+          <a href="#">Sign in</a>
+        </div>
       </div>
     </div>
   </nav>
+
+  <!-- Subscribe banner -->
+  <div class="container">
+    <div class="subscribe-banner">
+      <div class="subscribe-banner__text">
+        <strong>Subscribe to the Circular</strong> — New issues delivered fortnightly.
+      </div>
+      <a href="#" class="btn btn--sm btn--filled">Subscribe</a>
+    </div>
+  </div>
 
   <!-- ======================================================
        MAIN CONTENT
@@ -193,7 +206,10 @@
 
         <!-- ---- Sidebar ---- -->
         <aside class="page-layout__sidebar" aria-label="Table of contents">
-          <div class="toc-sidebar">
+          <button class="toc-toggle btn btn--sm"
+                  aria-expanded="false"
+                  aria-controls="toc-sidebar-content">In This Issue</button>
+          <div class="toc-sidebar" id="toc-sidebar-content">
             <div class="toc-sidebar__title">In This Issue</div>
 
             <div class="toc-sidebar__section">Analysis</div>
@@ -239,5 +255,6 @@
     </div>
   </footer>
 
+  <script src="js/circular.js" defer></script>
 </body>
 </html>
