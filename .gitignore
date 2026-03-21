@@ -12,8 +12,9 @@ Thumbs.db
 .claude/
 .mcp.json
 
-# Node (for future build pipeline)
+# Node / Build
 node_modules/
+_site/
 dist/
 .cache/
 

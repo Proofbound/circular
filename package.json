@@ -1,0 +1,13 @@
+{
+  "name": "circular",
+  "version": "1.0.0",
+  "description": "Karam & Sprague's Fortnightly Circular — static magazine",
+  "scripts": {
+    "build": "eleventy",
+    "serve": "eleventy --serve",
+    "clean": "rm -rf _site"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0"
+  }
+}

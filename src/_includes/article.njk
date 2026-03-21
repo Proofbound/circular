@@ -1,0 +1,96 @@
+---
+layout: base.njk
+isArticle: true
+---
+{% set allArticles = collections.articles %}
+{% set currentIndex = -1 %}
+{% for a in allArticles %}
+  {% if a.url == page.url %}{% set currentIndex = loop.index0 %}{% endif %}
+{% endfor %}
+{% set prevArticle = allArticles[currentIndex - 1] if currentIndex > 0 else null %}
+{% set nextArticle = allArticles[currentIndex + 1] if currentIndex < allArticles.length - 1 else null %}
+
+<main>
+  <div class="container">
+    <article class="article-page" data-comments="{{ site.comments }}">
+
+      <nav class="article-nav">
+        <a href="../index.html">&larr; Back to the Circular</a>
+      </nav>
+
+      <div class="subscribe-banner">
+        <div class="subscribe-banner__text">
+          <strong>Subscribe to the Circular</strong> — New issues delivered fortnightly.
+        </div>
+        <a href="{{ site.subscribeUrl }}" class="btn btn--sm btn--filled">Subscribe</a>
+      </div>
+
+      <header class="article-header">
+        <div class="article-header__section">{{ section }} &middot; {{ subsection }}</div>
+        <h1 class="article-header__title">{{ title }}</h1>
+        <p class="article-header__dek">{{ dek | safe }}</p>
+        <p class="article-header__byline">{% if author %}<strong>{{ author }}</strong> &mdash; {% endif %}{{ pubDate }}</p>
+      </header>
+
+      <hr class="rule--heavy rule--accent" style="max-width:680px;margin:0 auto 2.5rem;">
+
+      {% if leadImage %}
+      <figure class="article-figure article-figure--lead" style="max-width:680px;margin:0 auto 2.5rem;">
+        <img src="{{ leadImage.src }}" alt="{{ leadImage.alt }}">
+        <figcaption>{{ leadImage.caption }}</figcaption>
+      </figure>
+      {% endif %}
+
+      <div class="article-body">
+        {{ content | safe }}
+      </div>
+
+      <!-- Share controls -->
+      <div class="share-controls">
+        <span class="share-controls__label">Share</span>
+        <a href="#" class="btn btn--sm share-controls__x">X</a>
+        <a href="#" class="btn btn--sm share-controls__fb">Facebook</a>
+        <button type="button" class="btn btn--sm share-controls__copy">Copy link</button>
+      </div>
+
+      <!-- Article continuation -->
+      <div class="article-continuation">
+        <nav class="article-continuation__nav" aria-label="More in this issue">
+          {% if prevArticle %}
+          <a href="{{ prevArticle.fileSlug }}.html" class="article-continuation__link article-continuation__link--prev">
+            <small>&larr; Previous</small>
+            <span>{{ prevArticle.data.title }}</span>
+          </a>
+          {% endif %}
+          {% if nextArticle %}
+          <a href="{{ nextArticle.fileSlug }}.html" class="article-continuation__link article-continuation__link--next">
+            <small>Next &rarr;</small>
+            <span>{{ nextArticle.data.title }}</span>
+          </a>
+          {% endif %}
+        </nav>
+
+        {% if nextArticle %}
+        <div class="article-nextup">
+          <div class="article-nextup__label">Next Up</div>
+          <h3 class="article-nextup__title"><a href="{{ nextArticle.fileSlug }}.html">{{ nextArticle.data.title }}</a></h3>
+          <p class="article-nextup__dek">{{ nextArticle.data.dek }}</p>
+        </div>
+        {% else %}
+        <div class="article-nextup">
+          <div class="article-nextup__label">End of Issue</div>
+          <p class="article-nextup__dek">You have reached the end of Vol. {{ site.volume }}, No. {{ site.issue }}.</p>
+          <a href="../index.html" class="btn btn--sm" style="margin-top:0.75rem;">Return to the Circular</a>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Comments placeholder -->
+      <div class="comments-placeholder">
+        <div class="comments-placeholder__title">Discussion</div>
+        <p>Comments are not yet available. Check back soon.</p>
+      </div>
+
+    </article>
+  </div>
+</main>
