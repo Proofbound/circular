@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code local config
+.claude/
+.mcp.json
+
+# Node (for future build pipeline)
+node_modules/
+dist/
+.cache/
+
+# Environment
+.env
+.env.*
