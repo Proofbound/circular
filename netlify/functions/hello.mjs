@@ -1,4 +1,13 @@
+const ALLOWED_ORIGINS = [
+  "https://proofbound.com",
+  "http://localhost:8888",
+  "http://localhost:8080",
+];
+
 export default async (req, context) => {
+  const origin = req.headers.get("origin");
+  const cors = ALLOWED_ORIGINS.includes(origin) ? origin : "null";
+
   return new Response(
     JSON.stringify({
       status: "ok",
@@ -8,7 +17,7 @@ export default async (req, context) => {
     {
       headers: {
         "content-type": "application/json",
-        "access-control-allow-origin": "*",
+        "access-control-allow-origin": cors,
       },
     }
   );

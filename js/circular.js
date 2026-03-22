@@ -172,7 +172,9 @@
     var opts = controller ? { signal: controller.signal } : {};
     if (controller) setTimeout(function () { controller.abort(); }, 3000);
 
-    fetch('http://localhost:8888/.netlify/functions/hello', opts)
+    var isLocal = location.hostname === 'localhost' || location.protocol === 'file:';
+    var base = isLocal ? 'http://localhost:8888' : 'https://proofbound-circular.netlify.app';
+    fetch(base + '/.netlify/functions/hello', opts)
       .then(function (res) { return res.ok ? res.json() : Promise.reject(); })
       .then(function (data) {
         if (data && data.status === 'ok') {
