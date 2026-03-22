@@ -18,12 +18,18 @@ task reset           # stop, rebuild, restart
 
 ## Deployment
 
-- Served at: `https://proofbound.com/circular`
-- Own repo: `Proofbound/circular` (this repo)
-- Own DO App Platform static site (separate from proofbound-oof)
-- Cloudflare Worker proxies `proofbound.com/circular/*` → DO app (stripping `/circular` prefix)
-- All asset paths must be relative (no absolute root-relative paths like `/css/...`)
-- DO App Platform should serve from `_site/` output directory
+**Split architecture:** static site on DO, serverless functions on Netlify.
+
+- **Static site (DO App Platform):** serves `proofbound.com/circular`
+  - Cloudflare Worker proxies `proofbound.com/circular/*` → DO app (stripping `/circular` prefix)
+  - Auto-deploys from `main` branch on push
+  - All asset paths must be relative (no absolute root-relative paths)
+- **Functions (Netlify):** `proofbound-circular.netlify.app`
+  - Netlify site: `proofbound-circular` on Proofbound team
+  - Auto-deploys from `main` branch via GitHub webhook + deploy key
+  - Functions available at `/.netlify/functions/<name>`
+  - CORS restricted to `proofbound.com` and localhost origins
+- **Sign-in connectivity:** JS pings Netlify hello function on page load; Sign in button glows green when functions are reachable
 
 ## Structure
 
