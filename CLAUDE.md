@@ -7,12 +7,14 @@ A static online magazine — high-quality think pieces and light reading, styled
 ```bash
 npm install          # one-time setup
 npm run build        # generates _site/ from src/
-npm run serve        # local dev server with live reload
+task serve           # Netlify dev server (static site + functions)
+task reset           # stop, rebuild, restart
 ```
 
 - **SSG**: Eleventy (11ty) v3
 - **Input**: `src/` (Nunjucks templates + HTML articles with YAML frontmatter)
 - **Output**: `_site/` (static HTML/CSS/JS ready for deployment)
+- **Functions**: Netlify Functions in `netlify/functions/` (serverless endpoints for auth, preferences, etc.)
 
 ## Deployment
 
@@ -40,6 +42,9 @@ css/style.css          # Stylesheet (passthrough copied to _site/)
 js/circular.js         # Interactive features (passthrough copied to _site/)
 images/                # Image assets
 eleventy.config.js     # Eleventy configuration
+netlify.toml           # Netlify build + functions config
+netlify/functions/     # Serverless functions (ES modules, .mjs)
+Taskfile.yml           # Task runner (task reset, task serve, etc.)
 ```
 
 ## Adding a New Article

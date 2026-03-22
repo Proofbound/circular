@@ -1,0 +1,36 @@
+version: "3"
+
+tasks:
+  build:
+    desc: Build the static site
+    cmds:
+      - npx eleventy
+    sources:
+      - src/**/*
+      - eleventy.config.js
+    generates:
+      - _site/**/*
+
+  serve:
+    desc: Start Netlify dev server (static site + functions)
+    cmds:
+      - netlify dev
+
+  stop:
+    desc: Stop any running dev servers
+    cmds:
+      - pkill -f "netlify dev" || true
+      - pkill -f "eleventy --serve" || true
+    silent: true
+
+  reset:
+    desc: Stop server, rebuild, and restart with Netlify dev
+    cmds:
+      - task: stop
+      - task: build
+      - task: serve
+
+  clean:
+    desc: Remove the _site output directory
+    cmds:
+      - rm -rf _site

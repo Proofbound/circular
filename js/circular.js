@@ -10,6 +10,7 @@
     initDeepLinks();
     initShareControls();
     initMobileTocToggle();
+    initSigninStatus();
   });
 
   /* -- Nav-bar active section highlighting (index only) ------ */
@@ -160,6 +161,25 @@
       toggle.setAttribute('aria-expanded', String(!expanded));
       toc.classList.toggle('toc-sidebar--open');
     });
+  }
+
+  /* -- Sign-in status (Netlify Functions connectivity) -------- */
+  function initSigninStatus() {
+    var links = document.querySelectorAll('[data-signin]');
+    if (!links.length) return;
+
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var opts = controller ? { signal: controller.signal } : {};
+    if (controller) setTimeout(function () { controller.abort(); }, 3000);
+
+    fetch('http://localhost:8888/.netlify/functions/hello', opts)
+      .then(function (res) { return res.ok ? res.json() : Promise.reject(); })
+      .then(function (data) {
+        if (data && data.status === 'ok') {
+          links.forEach(function (el) { el.classList.add('signin--live'); });
+        }
+      })
+      .catch(function () { /* functions unavailable — button stays normal */ });
   }
 
   /* -- Helper ------------------------------------------------ */

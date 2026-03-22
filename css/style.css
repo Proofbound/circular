@@ -549,6 +549,11 @@ footer a:hover { color: var(--cream); }
   color: var(--accent);
   text-decoration: none;
 }
+.nav-bar__actions a.signin--live {
+  color: #2e7d32;
+  text-shadow: 0 0 8px rgba(46, 125, 50, 0.5);
+  transition: color var(--transition-fast), text-shadow var(--transition-fast);
+}
 
 /* ============================================================
    SUBSCRIBE BANNER
