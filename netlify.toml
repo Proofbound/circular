@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = "_site"
+
+[functions]
+  directory = "netlify/functions"
+
+[dev]
+  command = "npx @11ty/eleventy --serve --quiet"
+  targetPort = 8080
+  autoLaunch = false
