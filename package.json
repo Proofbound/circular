@@ -5,9 +5,14 @@
   "scripts": {
     "build": "eleventy",
     "serve": "eleventy --serve",
-    "clean": "rm -rf _site"
+    "clean": "rm -rf _site",
+    "sync": "node scripts/sync-gdrive.mjs"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.7.0",
+    "googleapis": "^171.4.0"
   }
 }

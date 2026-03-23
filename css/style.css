@@ -578,6 +578,89 @@ footer a:hover { color: var(--cream); }
 }
 
 /* ============================================================
+   SUBSCRIBE MODAL
+   ============================================================ */
+.subscribe-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+.subscribe-modal[aria-hidden="false"] {
+  display: flex;
+}
+.subscribe-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 18, 8, 0.55);
+}
+.subscribe-modal__dialog {
+  position: relative;
+  background: var(--cream);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  max-width: 420px;
+  width: 90%;
+  padding: 2.5rem 2rem 2rem;
+  box-shadow: 0 8px 32px rgba(26, 18, 8, 0.2);
+}
+.subscribe-modal__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: var(--ink-light);
+  cursor: pointer;
+  line-height: 1;
+}
+.subscribe-modal__close:hover { color: var(--ink); }
+.subscribe-modal__dialog h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+.subscribe-modal__dek {
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  color: var(--ink-muted);
+  margin-bottom: 1.5rem;
+}
+.subscribe-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.subscribe-modal__form input {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--rule);
+  background: #faf6ed;
+  color: var(--ink);
+}
+.subscribe-modal__form input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+.subscribe-modal__form .btn {
+  margin-top: 0.25rem;
+}
+.subscribe-modal__status {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  margin-top: 0.75rem;
+  min-height: 1.2em;
+}
+.subscribe-modal__status--success { color: #2e7d32; }
+.subscribe-modal__status--error { color: #8b2500; }
+
+/* ============================================================
    SHARE CONTROLS (end of article)
    ============================================================ */
 .share-controls {

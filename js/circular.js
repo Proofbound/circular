@@ -11,6 +11,7 @@
     initShareControls();
     initMobileTocToggle();
     initSigninStatus();
+    initSubscribe();
   });
 
   /* -- Nav-bar active section highlighting (index only) ------ */
@@ -182,6 +183,80 @@
         }
       })
       .catch(function () { /* functions unavailable — button stays normal */ });
+  }
+
+  /* -- Subscribe modal --------------------------------------- */
+  function initSubscribe() {
+    var modal = document.getElementById('subscribe-modal');
+    var form = document.getElementById('subscribe-form');
+    var status = document.getElementById('subscribe-status');
+    if (!modal || !form) return;
+
+    var backdrop = modal.querySelector('.subscribe-modal__backdrop');
+    var closeBtn = modal.querySelector('.subscribe-modal__close');
+    var triggers = document.querySelectorAll('[data-subscribe]');
+
+    function openModal() {
+      modal.setAttribute('aria-hidden', 'false');
+      var emailInput = form.querySelector('input[name="email"]');
+      if (emailInput) emailInput.focus();
+    }
+
+    function closeModal() {
+      modal.setAttribute('aria-hidden', 'true');
+      status.textContent = '';
+      status.className = 'subscribe-modal__status';
+    }
+
+    triggers.forEach(function (btn) {
+      btn.addEventListener('click', openModal);
+    });
+
+    if (backdrop) backdrop.addEventListener('click', closeModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') {
+        closeModal();
+      }
+    });
+
+    var isLocal = location.hostname === 'localhost' || location.protocol === 'file:';
+    var base = isLocal ? 'http://localhost:8888' : 'https://proofbound-circular.netlify.app';
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.querySelector('input[name="email"]').value.trim();
+      var name = form.querySelector('input[name="name"]').value.trim();
+
+      status.textContent = 'Subscribing\u2026';
+      status.className = 'subscribe-modal__status';
+
+      fetch(base + '/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, name: name })
+      })
+        .then(function (res) {
+          return res.json().then(function (data) {
+            return { ok: res.ok, data: data };
+          });
+        })
+        .then(function (result) {
+          if (result.ok) {
+            status.textContent = 'Thank you! You\u2019re subscribed.';
+            status.className = 'subscribe-modal__status subscribe-modal__status--success';
+            form.style.display = 'none';
+          } else {
+            status.textContent = result.data.error || 'Something went wrong.';
+            status.className = 'subscribe-modal__status subscribe-modal__status--error';
+          }
+        })
+        .catch(function () {
+          status.textContent = 'Could not reach the server. Please try again later.';
+          status.className = 'subscribe-modal__status subscribe-modal__status--error';
+        });
+    });
   }
 
   /* -- Helper ------------------------------------------------ */
