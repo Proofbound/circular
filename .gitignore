@@ -25,3 +25,7 @@ deno.lock
 # Environment
 .env
 .env.*
+
+# Sync
+.sync-manifest.json
+.gdrive-token.json
