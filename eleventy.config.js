@@ -3,6 +3,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "css": "css" });
   eleventyConfig.addPassthroughCopy({ "js": "js" });
   eleventyConfig.addPassthroughCopy({ "images": "images" });
+  eleventyConfig.addPassthroughCopy({ "assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "circular-masthead-horizontal-clipped.jpg": "circular-masthead-horizontal-clipped.jpg" });
   eleventyConfig.addPassthroughCopy({ "circular-masthead-horizontal.jpg": "circular-masthead-horizontal.jpg" });
   eleventyConfig.addPassthroughCopy({ "circular-masthead.jpg": "circular-masthead.jpg" });

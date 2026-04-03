@@ -261,6 +261,66 @@ footer a:visited { color: var(--rule); }
 .section-block__grid--two .article-card:last-child { border-right: none; padding-right: 0; }
 
 /* ============================================================
+   CONTRIBUTORS (About section)
+   ============================================================ */
+/* -- Contributors page ------------------------------------- */
+.contributors-page {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+}
+.contributors-page__header {
+  margin-bottom: 1.5rem;
+}
+.contributors-page__title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+}
+.contributors-page__dek {
+  max-width: 680px;
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+  line-height: 1.75;
+}
+.contributors__list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+}
+.contributor-card {
+  padding: 1.2rem 1.5rem;
+  border: 1px solid var(--rule-light);
+  background: rgba(212, 192, 154, 0.15);
+}
+.contributor-card--full {
+  padding: 1.5rem 2rem;
+}
+.contributor-card__name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+.contributor-card__role {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 0.6rem;
+}
+.contributor-card__bio {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+}
+
+/* ============================================================
    TABLE OF CONTENTS (sidebar-style on index)
    ============================================================ */
 .toc-sidebar {
@@ -837,6 +897,8 @@ footer a:hover { color: var(--cream); }
   .article-continuation__nav { flex-direction: column; gap: 1.5rem; }
   .article-continuation__link { max-width: 100%; }
   .article-continuation__link--next { text-align: left; margin-left: 0; }
+  .contributors__list { grid-template-columns: 1fr; }
+  .contributor-card--full { padding: 1.2rem 1.5rem; }
 }
 @media (max-width: 500px) {
   html { font-size: 16px; }
