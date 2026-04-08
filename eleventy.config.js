@@ -4,9 +4,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "js": "js" });
   eleventyConfig.addPassthroughCopy({ "images": "images" });
   eleventyConfig.addPassthroughCopy({ "assets": "assets" });
-  eleventyConfig.addPassthroughCopy({ "circular-masthead-horizontal-clipped.jpg": "circular-masthead-horizontal-clipped.jpg" });
-  eleventyConfig.addPassthroughCopy({ "circular-masthead-horizontal.jpg": "circular-masthead-horizontal.jpg" });
-  eleventyConfig.addPassthroughCopy({ "circular-masthead.jpg": "circular-masthead.jpg" });
+  // Masthead images live in assets/ (passthrough copied above)
 
   // Article-level images (served from articles/ in output)
   eleventyConfig.addPassthroughCopy({ "articles/**/*.jpeg": "articles/" });

@@ -11,7 +11,7 @@
 
   <header class="masthead">
     <a href="{{ '../' if isArticle else '' }}index.html" class="masthead__image-wrap">
-      <img src="{{ '../' if isArticle else '' }}circular-masthead-horizontal-clipped.jpg"
+      <img src="{{ '../' if isArticle else '' }}assets/circular-masthead-horizontal-clipped.jpg"
            alt="Karam &amp; Sprague&rsquo;s Fortnightly Circular &mdash; Conducted for the Benefit of Persons of Discernment &amp; Enquiring Disposition"
            class="masthead__image">
     </a>
@@ -62,6 +62,16 @@
     </div>
   </div>
 
+  <!-- Supabase JS client (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- Runtime config (public keys only — safe for client-side) -->
+  <script>
+    window.__CIRCULAR__ = {
+      supabaseUrl:    "{{ site.supabaseUrl }}",
+      supabaseAnonKey:"{{ site.supabaseAnonKey }}",
+      platformApiUrl: "{{ site.platformApiUrl }}"
+    };
+  </script>
   <script src="{{ '../' if isArticle else '' }}js/circular.js" defer></script>
 </body>
 </html>

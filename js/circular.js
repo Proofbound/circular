@@ -164,7 +164,14 @@
     });
   }
 
-  /* -- Sign-in status (Netlify Functions connectivity) -------- */
+  /* -- Supabase client ---------------------------------------- */
+  var cfg = window.__CIRCULAR__ || {};
+  var supabase = null;
+  if (cfg.supabaseUrl && cfg.supabaseAnonKey && window.supabase) {
+    supabase = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  }
+
+  /* -- Sign-in status (Platform API connectivity) ------------- */
   function initSigninStatus() {
     var links = document.querySelectorAll('[data-signin]');
     if (!links.length) return;
@@ -173,16 +180,30 @@
     var opts = controller ? { signal: controller.signal } : {};
     if (controller) setTimeout(function () { controller.abort(); }, 3000);
 
-    var isLocal = location.hostname === 'localhost' || location.protocol === 'file:';
-    var base = isLocal ? 'http://localhost:8888' : 'https://proofbound-circular.netlify.app';
-    fetch(base + '/.netlify/functions/hello', opts)
+    // Ping the ProofBound Platform API health endpoint
+    var apiUrl = cfg.platformApiUrl || 'https://proofbound.com/api/v1/platform';
+    fetch(apiUrl + '/health', opts)
       .then(function (res) { return res.ok ? res.json() : Promise.reject(); })
       .then(function (data) {
         if (data && data.status === 'ok') {
           links.forEach(function (el) { el.classList.add('signin--live'); });
         }
       })
-      .catch(function () { /* functions unavailable — button stays normal */ });
+      .catch(function () { /* platform API unavailable — button stays normal */ });
+
+    // TODO: Once Supabase Auth is wired up, check session here
+    // and update Sign In link to show user state:
+    //   if (supabase) {
+    //     supabase.auth.getSession().then(function (result) {
+    //       var session = result.data.session;
+    //       if (session) {
+    //         links.forEach(function (el) {
+    //           el.textContent = 'Account';
+    //           el.classList.add('signin--authenticated');
+    //         });
+    //       }
+    //     });
+    //   }
   }
 
   /* -- Subscribe modal --------------------------------------- */
@@ -221,8 +242,7 @@
       }
     });
 
-    var isLocal = location.hostname === 'localhost' || location.protocol === 'file:';
-    var base = isLocal ? 'http://localhost:8888' : 'https://proofbound-circular.netlify.app';
+    var apiUrl = cfg.platformApiUrl || 'https://proofbound.com/api/v1/platform';
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -232,10 +252,11 @@
       status.textContent = 'Subscribing\u2026';
       status.className = 'subscribe-modal__status';
 
-      fetch(base + '/.netlify/functions/subscribe', {
+      // POST to ProofBound Platform API subscribe endpoint
+      fetch(apiUrl + '/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, name: name })
+        body: JSON.stringify({ email: email, name: name, product: 'circular' })
       })
         .then(function (res) {
           return res.json().then(function (data) {
