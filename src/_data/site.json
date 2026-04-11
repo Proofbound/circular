@@ -10,5 +10,5 @@
   "comments": "on",
   "supabaseUrl": "https://zvyyutihtztvlnnhzoah.supabase.co",
   "supabaseAnonKey": "sb_publishable_g6e1z1RHwTreFtq_CJgo2A_rDokj3kD",
-  "platformApiUrl": "https://proofbound.com/api/v1/platform"
+  "platformApiUrl": "https://app.proofbound.com/api/v1/platform"
 }

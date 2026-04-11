@@ -247,7 +247,7 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var email = form.querySelector('input[name="email"]').value.trim();
-      var name = form.querySelector('input[name="name"]').value.trim();
+      var honeypot = form.querySelector('input[name="website"]').value;
 
       status.textContent = 'Subscribing\u2026';
       status.className = 'subscribe-modal__status';
@@ -256,7 +256,7 @@
       fetch(apiUrl + '/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, name: name, product: 'circular' })
+        body: JSON.stringify({ email: email, product: 'circular', website: honeypot })
       })
         .then(function (res) {
           return res.json().then(function (data) {
@@ -269,7 +269,7 @@
             status.className = 'subscribe-modal__status subscribe-modal__status--success';
             form.style.display = 'none';
           } else {
-            status.textContent = result.data.error || 'Something went wrong.';
+            status.textContent = result.data.detail || 'Something went wrong.';
             status.className = 'subscribe-modal__status subscribe-modal__status--error';
           }
         })
