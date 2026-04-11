@@ -71,7 +71,9 @@ Taskfile.yml           # Task runner
 
 ### Asset rule
 
-**All binary assets (images, fonts, anything not source) must live under `assets/` and be committed to git.** Eleventy passthrough-copies `assets/` → `_site/assets/`; nothing outside that path will end up in the build. A previous deploy shipped a broken 16px masthead because the JPG was sitting in a local-only working copy of `assets/` and was never `git add`ed — the local build worked, the DO build 404'd. Any new image goes through `git add assets/<file>` before it's referenced from a template.
+**New binary assets (images, fonts, anything not source) go under `assets/` and must be committed to git.** Eleventy passthrough-copies `assets/` → `_site/assets/`; a file sitting in a local working tree but un-staged will build locally and 404 in production (this is how the masthead shipped as a broken 16px placeholder — the JPG was never `git add`ed). Any new image: `git add assets/<file>` before referencing it from a template.
+
+**Legacy exception**: [eleventy.config.js](eleventy.config.js) also passthrough-copies `articles/**/*.{jpg,jpeg,png}` from the repo root into `_site/articles/`. One article image (`articles/stop-calling-me-the-great.jpeg`) still relies on this. New article images should go in `assets/` instead, referenced via a relative path like `../assets/<file>`.
 
 ### Deleted (migration from prototype)
 
