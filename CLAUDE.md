@@ -63,10 +63,15 @@ src/
   404.njk              # 404 page template
 css/style.css          # Stylesheet (passthrough copied to _site/)
 js/circular.js         # Auth, subscriptions, connectivity (calls platform API)
-images/                # Image assets
+assets/                # Canonical home for all binary assets (masthead, author bios, etc.)
+images/                # Legacy image dir, also passthrough copied — prefer assets/ for new files
 eleventy.config.js     # Eleventy configuration
 Taskfile.yml           # Task runner
 ```
+
+### Asset rule
+
+**All binary assets (images, fonts, anything not source) must live under `assets/` and be committed to git.** Eleventy passthrough-copies `assets/` → `_site/assets/`; nothing outside that path will end up in the build. A previous deploy shipped a broken 16px masthead because the JPG was sitting in a local-only working copy of `assets/` and was never `git add`ed — the local build worked, the DO build 404'd. Any new image goes through `git add assets/<file>` before it's referenced from a template.
 
 ### Deleted (migration from prototype)
 
