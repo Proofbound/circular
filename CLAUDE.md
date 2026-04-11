@@ -1,6 +1,6 @@
 # Karam & Sprague's Fortnightly Circular
 
-**Last Updated**: April 10, 2026
+**Last Updated**: April 11, 2026
 **Status**: Migrated off Netlify/Firebase. Platform API Phase 1 (subscribe / unsubscribe / health) implemented server-side and wired in `circular.js`. Newsletter dispatch (Phase 2) is deferred — sends are manual until then. See [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md) for the full plan and remaining deploy steps.
 
 A static online magazine — high-quality think pieces and light reading, styled like a high-brow Victorian periodical. Published by Sami J. Karam and Richard Sprague.
@@ -57,6 +57,7 @@ src/
     article.njk       # Article page layout (nav, header, continuation, share)
   _data/
     site.json          # Site config (title, volume, issue, editors, URLs)
+    authors.js         # Author bios / metadata
   articles/            # Article content with YAML frontmatter
     <slug>.html
   index.njk            # Index page template
@@ -126,23 +127,24 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 ### Subscriptions (platform API) — implemented in [js/circular.js](js/circular.js)
 
-`initSubscribe()` POSTs the modal form to `cfg.platformApiUrl + '/subscribe'` (default `https://proofbound.com/api/v1/platform`). The API base URL comes from `window.CIRCULAR_CONFIG` so local dev can override it.
+`initSubscribe()` POSTs the modal form to `cfg.platformApiUrl + '/subscribe'` (default `https://proofbound.com/api/v1/platform`). The API base URL comes from `window.__CIRCULAR__` (set inline in base.njk from `site.json`) so local dev can override it.
 
 ```javascript
 // Subscribe — request body shape
 {
   email: 'user@example.com',
   product: 'circular',
+  website: '',                 // honeypot — hidden input, must be empty
   // turnstile_token: '...',   // TODO — required in production once TURNSTILE_SECRET_KEY is set
-  // website: ''                // TODO — honeypot, must be present and empty
 }
 
 // Unsubscribe — same shape minus turnstile/honeypot, idempotent (always 200)
 ```
 
-**Known client gaps** (server already supports both):
+The `<form>` in [src/_includes/base.njk](src/_includes/base.njk) is also hardened with `method="post"`, `action="{{ site.platformApiUrl }}/subscribe"`, and `onsubmit="return false"` so a JS failure cannot fall back to a native GET and leak the email into a URL query string. The JS handler calls `e.preventDefault()` and runs the real fetch — the form attributes are a safety net, not the happy path.
+
+**Known client gap** (server already supports it):
 - The subscribe form does **not** yet include a Cloudflare Turnstile widget or `turnstile_token` field. Once the production cc-template-api sets `TURNSTILE_SECRET_KEY`, every Circular subscribe will return `400 captcha_verification_failed` until this is wired.
-- The form does **not** yet include the `website` honeypot input. Add a hidden `<input name="website">` and pass its value through.
 
 Server contract details (rate limits, response shapes, validation rules) are in the "Phase 1 — Client Integration Guide" at the top of [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md).
 
