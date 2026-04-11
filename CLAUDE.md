@@ -1,7 +1,7 @@
 # Karam & Sprague's Fortnightly Circular
 
-**Last Updated**: April 8, 2026
-**Status**: Migration in progress (Netlify/Firebase → ProofBound Platform API)
+**Last Updated**: April 10, 2026
+**Status**: Migrated off Netlify/Firebase. Platform API Phase 1 (subscribe / unsubscribe / health) implemented server-side and wired in `circular.js`. Newsletter dispatch (Phase 2) is deferred — sends are manual until then. See [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md) for the full plan and remaining deploy steps.
 
 A static online magazine — high-quality think pieces and light reading, styled like a high-brow Victorian periodical. Published by Sami J. Karam and Richard Sprague.
 
@@ -11,20 +11,22 @@ Circular is a **static site + API consumer**. All dynamic behavior (auth, subscr
 
 ```
 proofbound.com/circular         proofbound.com/api/v1/platform
-(DO App Platform, static)       (DO droplet, FastAPI)
+(DO App Platform, static)       (DO droplet, FastAPI in cc-template-api)
         │                               │
-        ├─ Supabase JS client ─────→ Supabase Auth (direct)
-        ├─ POST /subscribe ────────→ subscriptions table
-        ├─ POST /unsubscribe ──────→ subscriptions table
-        └─ GET  /health ───────────→ connectivity check
+        ├─ Supabase JS client ─────→ Supabase Auth (direct, same project as book app)
+        ├─ POST /subscribe ────────→ email_subscriptions table (service-role)
+        ├─ POST /unsubscribe ──────→ email_subscriptions table (idempotent)
+        └─ GET  /health ───────────→ connectivity check (green dot in nav)
 ```
+
+The platform router lives inside cc-template-api on port 8001 — no separate service or container. Public endpoints are listed in `UNPROTECTED_PATHS` in `hybrid_auth.py` and rate-limited via slowapi (10/min subscribe, 30/min unsubscribe, per-IP).
 
 ### What Circular Does NOT Own
 
-- **Auth**: Uses Supabase JS client directly (same project as the book app). No auth endpoints in the platform API needed — Supabase client handles signup/login/session.
-- **Email dispatch**: Handled by the monorepo's existing Supabase Edge Function (`send-notification`) + Resend. Circular just adds a `circular_newsletter` email type.
-- **User accounts**: Shared with the book app. One Supabase project, one `auth.users` table. A Circular subscriber who later uses the book app is the same user.
-- **Serverless functions**: None. The old Netlify Functions and Firebase dependencies are deleted.
+- **Auth**: Uses Supabase JS client directly (same project as the book app). No auth endpoints in the platform API — Supabase client handles signup/login/session. (Wiring still TODO in `circular.js`; see "Auth & Subscriptions" below.)
+- **Email dispatch**: Phase 2, currently deferred. Until it ships, newsletter sends are done manually (Resend dashboard or one-off script reading from `email_subscriptions`). When it lands it will route through the existing `send-notification` Edge Function or Resend's batch API — see §4 of [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md).
+- **User accounts**: Shared with the book app. One Supabase project, one `auth.users` table. A Circular subscriber who later creates a book-app account is the same user — `email_subscriptions.user_id` is backfilled automatically.
+- **Serverless functions**: None. The old Netlify Functions and Firebase dependencies are deleted and must not come back.
 
 ## Build
 
@@ -115,27 +117,31 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 // Same Supabase project as the book app — shared user identity
 ```
 
-### Subscriptions (platform API)
+### Subscriptions (platform API) — implemented in [js/circular.js](js/circular.js)
+
+`initSubscribe()` POSTs the modal form to `cfg.platformApiUrl + '/subscribe'` (default `https://proofbound.com/api/v1/platform`). The API base URL comes from `window.CIRCULAR_CONFIG` so local dev can override it.
 
 ```javascript
-// Subscribe to Circular newsletter
-const res = await fetch('https://proofbound.com/api/v1/platform/subscribe', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email, product: 'circular' })
-})
+// Subscribe — request body shape
+{
+  email: 'user@example.com',
+  product: 'circular',
+  // turnstile_token: '...',   // TODO — required in production once TURNSTILE_SECRET_KEY is set
+  // website: ''                // TODO — honeypot, must be present and empty
+}
 
-// Unsubscribe
-const res = await fetch('https://proofbound.com/api/v1/platform/unsubscribe', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email, product: 'circular' })
-})
+// Unsubscribe — same shape minus turnstile/honeypot, idempotent (always 200)
 ```
+
+**Known client gaps** (server already supports both):
+- The subscribe form does **not** yet include a Cloudflare Turnstile widget or `turnstile_token` field. Once the production cc-template-api sets `TURNSTILE_SECRET_KEY`, every Circular subscribe will return `400 captcha_verification_failed` until this is wired.
+- The form does **not** yet include the `website` honeypot input. Add a hidden `<input name="website">` and pass its value through.
+
+Server contract details (rate limits, response shapes, validation rules) are in the "Phase 1 — Client Integration Guide" at the top of [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md).
 
 ### Connectivity check
 
-On page load, `circular.js` pings `proofbound.com/api/v1/platform/health`. If reachable, the Sign In button glows green. This replaces the old Netlify hello function ping.
+On page load, `initSigninStatus()` in `circular.js` pings `<platformApiUrl>/health`. If it returns 200, the Sign In button gets a green indicator. This replaces the old Netlify hello function ping. Supabase Auth session-checking is stubbed out (`TODO` block) — needs wiring before login actually works.
 
 ## Design Principles
 
