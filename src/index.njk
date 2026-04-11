@@ -49,7 +49,7 @@ permalink: "index.html"
                     <a href="articles/{{ lead.fileSlug }}.html">{{ lead.data.title }}</a>
                   </h2>
                   <p class="article-card__byline">{{ lead.data.author }} — {{ lead.data.pubDate }}</p>
-                  <p class="article-card__dek">{{ lead.data.dek }}</p>
+                  <p class="article-card__dek">{{ lead.data.dek | safe }}</p>
                 </article>
               </div>
 
@@ -62,7 +62,7 @@ permalink: "index.html"
                     <a href="articles/{{ secondary1.fileSlug }}.html">{{ secondary1.data.title }}</a>
                   </h3>
                   <p class="article-card__byline">{{ secondary1.data.author }} — {{ secondary1.data.pubDate }}</p>
-                  <p class="article-card__dek">{{ secondary1.data.dek }}</p>
+                  <p class="article-card__dek">{{ secondary1.data.dek | safe }}</p>
                 </article>
 
                 {% set secondary2 = collections.articles | selectattr("data.order", "equalto", 4) | first %}
@@ -72,7 +72,7 @@ permalink: "index.html"
                     <a href="articles/{{ secondary2.fileSlug }}.html">{{ secondary2.data.title }}</a>
                   </h3>
                   <p class="article-card__byline">{{ secondary2.data.author }} — {{ secondary2.data.pubDate }}</p>
-                  <p class="article-card__dek">{{ secondary2.data.dek }}</p>
+                  <p class="article-card__dek">{{ secondary2.data.dek | safe }}</p>
                 </article>
               </div>
 
@@ -95,7 +95,7 @@ permalink: "index.html"
                   <a href="articles/{{ article.fileSlug }}.html">{{ article.data.title }}</a>
                 </h3>
                 <p class="article-card__byline">{{ article.data.author | default(article.data.pubDate) }}</p>
-                <p class="article-card__dek">{{ article.data.dek }}</p>
+                <p class="article-card__dek">{{ article.data.dek | safe }}</p>
                 <p class="mt-2"><a href="articles/{{ article.fileSlug }}.html">Read &rarr;</a></p>
               </article>
               {% endfor %}
@@ -116,7 +116,7 @@ permalink: "index.html"
                   <a href="articles/{{ article.fileSlug }}.html">{{ article.data.title }}</a>
                 </h3>
                 <p class="article-card__byline">{{ article.data.pubDate }}</p>
-                <p class="article-card__dek">{{ article.data.dek }}</p>
+                <p class="article-card__dek">{{ article.data.dek | safe }}</p>
                 <p class="mt-2"><a href="articles/{{ article.fileSlug }}.html">Read &rarr;</a></p>
               </article>
               {% endfor %}

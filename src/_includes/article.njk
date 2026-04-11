@@ -74,7 +74,7 @@ isArticle: true
         <div class="article-nextup">
           <div class="article-nextup__label">Next Up</div>
           <h3 class="article-nextup__title"><a href="{{ nextArticle.fileSlug }}.html">{{ nextArticle.data.title }}</a></h3>
-          <p class="article-nextup__dek">{{ nextArticle.data.dek }}</p>
+          <p class="article-nextup__dek">{{ nextArticle.data.dek | safe }}</p>
         </div>
         {% else %}
         <div class="article-nextup">
