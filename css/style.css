@@ -97,14 +97,19 @@ footer a:visited { color: var(--rule); }
   border-bottom: 3px solid var(--ink);
 }
 .masthead__image-wrap {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+  background-color: #ddcebb;
   line-height: 0;
+  overflow: hidden;
 }
 .masthead__image {
   display: block;
-  width: 100%;
-  height: auto;
-  max-width: 100%;
+  height: 100%;
+  width: auto;
+  max-width: none;
 }
 .masthead__meta-bar {
   display: flex;
