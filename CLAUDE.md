@@ -73,9 +73,17 @@ Taskfile.yml           # Task runner
 
 ### Asset rule
 
-**New binary assets (images, fonts, anything not source) go under `assets/` and must be committed to git.** Eleventy passthrough-copies `assets/` → `_site/assets/`; a file sitting in a local working tree but un-staged will build locally and 404 in production (this is how the masthead shipped as a broken 16px placeholder — the JPG was never `git add`ed). Any new image: `git add assets/<file>` before referencing it from a template.
+**Site chrome** (masthead, fonts, author bios, anything shared across pages) lives under `assets/` and is passthrough-copied to `_site/assets/`. Commit new files with `git add assets/<file>` before referencing them — an un-staged file builds locally and 404s in production.
 
-**Legacy exception**: [eleventy.config.js](eleventy.config.js) also passthrough-copies `articles/**/*.{jpg,jpeg,png}` from the repo root into `_site/articles/`. One article image (`articles/stop-calling-me-the-great.jpeg`) still relies on this. New article images should go in `assets/` instead, referenced via a relative path like `../assets/<file>`.
+**Article lead images** live alongside the article's markdown source at `src/articles/<issue>/<file>.jpg`. [eleventy.config.js](eleventy.config.js) passthrough-copies `src/articles/**/*.{jpeg,jpg,png}` into a flat `_site/articles/` directory (same level as the rendered article HTML), so the frontmatter reference is just the bare filename:
+
+```yaml
+leadImage:
+  src: "gary-sick-cnn.jpeg"    # resolves to /circular/articles/gary-sick-cnn.jpeg
+  alt: "..."
+```
+
+The index template prefixes the cover story's image with `articles/` automatically, so the same bare filename works in both contexts.
 
 ### Deleted (migration from prototype)
 

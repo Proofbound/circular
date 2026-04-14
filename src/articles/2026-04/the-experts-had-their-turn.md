@@ -9,7 +9,7 @@ pubDate: "Spring 2026"
 issue: "vol1-no1"
 order: 9
 leadImage:
-  src: "../assets/gary-sick-cnn.jpeg"
+  src: "gary-sick-cnn.jpeg"
   alt: "Gary Sick, former White House Iran advisor, in a still from CNN's Amanpour"
   caption: "Gary Sick on CNN's Amanpour, calling the United States a rogue nation for its military campaign against Iran."
 permalink: "articles/{{ page.fileSlug }}.html"

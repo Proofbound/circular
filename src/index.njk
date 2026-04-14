@@ -49,7 +49,7 @@ permalink: "index.html"
             <article class="article-card article-card--cover">
               {% if featured.data.leadImage %}
               <figure class="article-card--cover__figure">
-                <img src="{{ featured.data.leadImage.src }}" alt="{{ featured.data.leadImage.alt | default('') }}">
+                <img src="articles/{{ featured.data.leadImage.src }}" alt="{{ featured.data.leadImage.alt | default('') }}">
                 {% if featured.data.leadImage.caption %}
                 <figcaption>{{ featured.data.leadImage.caption | safe }}</figcaption>
                 {% endif %}

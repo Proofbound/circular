@@ -4,12 +4,12 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "js": "js" });
   eleventyConfig.addPassthroughCopy({ "images": "images" });
   eleventyConfig.addPassthroughCopy({ "assets": "assets" });
-  // Masthead images live in assets/ (passthrough copied above)
 
-  // Article-level images (served from articles/ in output)
-  eleventyConfig.addPassthroughCopy({ "articles/**/*.jpeg": "articles/" });
-  eleventyConfig.addPassthroughCopy({ "articles/**/*.jpg": "articles/" });
-  eleventyConfig.addPassthroughCopy({ "articles/**/*.png": "articles/" });
+  // Article lead images live alongside the source markdown under
+  // src/articles/<issue>/, and mirror into _site/articles/<issue>/.
+  eleventyConfig.addPassthroughCopy({ "src/articles/**/*.jpeg": "articles" });
+  eleventyConfig.addPassthroughCopy({ "src/articles/**/*.jpg": "articles" });
+  eleventyConfig.addPassthroughCopy({ "src/articles/**/*.png": "articles" });
 
   // Collection: articles sorted by order field
   eleventyConfig.addCollection("articles", function (collectionApi) {
