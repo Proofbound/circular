@@ -762,6 +762,37 @@ hr.full {
   display: block;
   margin-bottom: var(--space-xs);
 }
+.site-footer__colophon {
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-caption);
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+}
+.site-footer__colophon-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: var(--color-ink);
+  border-bottom: none;
+}
+.site-footer__colophon-link:hover { color: var(--color-accent); }
+.site-footer__colophon-logo {
+  height: 1em;
+  width: auto;
+  vertical-align: middle;
+}
+.site-footer__colophon-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  letter-spacing: 0;
+}
 
 /* ============================================================
    RESPONSIVE

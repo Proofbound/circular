@@ -75,6 +75,8 @@ Taskfile.yml           # Task runner
 
 **Site chrome** (masthead, fonts, author bios, anything shared across pages) lives under `assets/` and is passthrough-copied to `_site/assets/`. Commit new files with `git add assets/<file>` before referencing them — an un-staged file builds locally and 404s in production.
 
+**Proofbound brand assets** (logos, favicons, tokens) are served from the shared CDN at `https://brand.proofbound.com/` — never copy them into this repo. The footer colophon uses `https://brand.proofbound.com/logos/proofbound-logo.svg`. See [`proofbound-shared/BRAND-USAGE.md`](../../proofbound/proofbound-shared/BRAND-USAGE.md) for the full inventory and rules.
+
 **Article lead images** live alongside the article's markdown source at `src/articles/<issue>/<file>.jpg`. [eleventy.config.js](eleventy.config.js) passthrough-copies `src/articles/**/*.{jpeg,jpg,png}` into a flat `_site/articles/` directory (same level as the rendered article HTML), so the frontmatter reference is just the bare filename:
 
 ```yaml
