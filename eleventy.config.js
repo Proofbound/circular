@@ -14,7 +14,7 @@ module.exports = function (eleventyConfig) {
   // Collection: articles sorted by order field
   eleventyConfig.addCollection("articles", function (collectionApi) {
     return collectionApi
-      .getFilteredByGlob("src/articles/**/*.html")
+      .getFilteredByGlob("src/articles/**/*.md")
       .sort(function (a, b) {
         return (a.data.order || 999) - (b.data.order || 999);
       });
@@ -46,7 +46,8 @@ module.exports = function (eleventyConfig) {
       data: "_data",
       output: "_site",
     },
-    templateFormats: ["njk", "html"],
+    templateFormats: ["njk", "md", "html"],
     htmlTemplateEngine: "njk",
+    markdownTemplateEngine: "njk",
   };
 };

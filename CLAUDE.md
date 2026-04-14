@@ -58,8 +58,9 @@ src/
   _data/
     site.json          # Site config (title, volume, issue, editors, URLs)
     authors.js         # Author bios / metadata
-  articles/            # Article content with YAML frontmatter
-    <slug>.html
+  articles/            # Article content (markdown + YAML frontmatter)
+    <issue>/           # e.g. 2026-04/ — one folder per issue
+      <slug>.md
   index.njk            # Index page template
   404.njk              # 404 page template
 css/style.css          # Stylesheet (passthrough copied to _site/)
@@ -86,7 +87,7 @@ These files/directories no longer exist and must not be recreated:
 
 ## Adding a New Article
 
-1. Create `src/articles/<slug>.html` with YAML frontmatter:
+1. Create `src/articles/<issue>/<slug>.md` with YAML frontmatter:
    ```yaml
    ---
    layout: article.njk
@@ -97,10 +98,12 @@ These files/directories no longer exist and must not be recreated:
    author: "Author Name"
    pubDate: "Season Year"
    issue: "vol1-no1"
-   order: 8                   # reading order within the issue
+   order: 8                   # reading order within the issue (see below)
+   featured: true             # optional — marks this article as the cover story
    permalink: "articles/{{ page.fileSlug }}.html"
    ---
-   <p>Article body HTML here...</p>
+
+   Article body as plain markdown — paragraphs, `##` headings, `*italics*`, `**bold**`, `---` for section breaks. Inline HTML is allowed when needed.
    ```
 2. Run `npm run build` — continuation nav and index page update automatically
 3. For lead images, add `leadImage:` block to frontmatter (see existing articles for examples)
@@ -111,7 +114,31 @@ Articles are organized by **section** on the index page:
 - **Analysis** — longform think pieces (geopolitics, finance, AI)
 - **Light Reading** — shorter, more accessible pieces
 
-Frontmatter fields `section`, `subsection`, and `order` drive the index page sections, TOC sidebar, and article continuation nav automatically.
+### `order` — reading order within the issue
+
+`order` is a single integer that governs **two** things:
+
+1. **Sidebar sort order on the index page.** Articles in the "In This Issue" sidebar are listed in ascending `order` within each section (Analysis first, then Light Reading). Lower numbers appear higher in the list. Gaps are fine — it's just a sort key, not an index.
+2. **Article continuation nav (prev/next at the bottom of each article page).** The next/prev links walk the full ordered list across both sections, so `order: 4` → `order: 5` → `order: 6` even if 5 is in a different section from 4. Pick numbers that give the reader a sensible flow, not just a sort.
+
+Conventions:
+- **Start at 1.** The flagship piece is typically `order: 1` so casual readers who click "Read next" from the cover story get the editor's recommended opening.
+- **Keep numbers contiguous within an issue.** A published issue should have `1, 2, 3, ...` with no gaps — gaps make the continuation nav feel arbitrary.
+- **Drafts and TODO articles use `order: 99`** and `section: "TODO"` so they drop out of both the sidebar and the continuation walk without being deleted.
+- **Renumbering is cheap.** If you reorder mid-edit, bump every affected article's `order` and rebuild — nothing else caches the numbering.
+
+### `featured` — which article is the cover story
+
+The front page renders **one** article as a full-width Barron's-style cover ([src/index.njk](src/index.njk)). Selection rules, in order:
+
+1. If any article has `featured: true`, the first such article wins. There should only ever be one per issue.
+2. Otherwise the template falls back to `order: 1` (see [src/index.njk](src/index.njk) at the top, inside the `{% if not featured %}` block).
+
+The cover story is **excluded** from the sidebar list — the sidebar shows every _other_ article so nothing is duplicated on the page. If you flag an article as featured and still see it in the sidebar, rebuild; the filter is `{% if not article.data.featured %}` inside each `<ul>`.
+
+Cover-story choice is decoupled from reading order on purpose: you can put the most visually striking or topical piece at the top of the page while keeping a different article at `order: 1` if the editor prefers a different opening read. For vol1-no1 the flagship "Iran, Give Me My Country Back" carries both `order: 1` and `featured: true`.
+
+Frontmatter fields `section`, `subsection`, `order`, and `featured` drive the index page sections, TOC sidebar, cover story, and article continuation nav automatically.
 
 ## Auth & Subscriptions (circular.js)
 
