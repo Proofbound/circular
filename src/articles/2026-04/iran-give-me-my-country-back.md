@@ -9,6 +9,10 @@ pubDate: "Spring 2026"
 issue: "vol1-no1"
 order: 1
 featured: true
+leadImage:
+  src: "beirut_cedar_engraving_v2.svg"
+  alt: "Victorian-style pen-and-ink engraving of Beirut's Ottoman and French mandate skyline descending to the Mediterranean, with a cedar of Lebanon in the foreground"
+  caption: "Beirut from the hillside, the cedar still standing watch over the Mediterranean."
 permalink: "articles/{{ page.fileSlug }}.html"
 ---
 

@@ -234,6 +234,24 @@ hr.full {
   margin-bottom: var(--space-lg);
 }
 
+.cover-story__figure {
+  max-width: var(--measure);
+  margin: 0 0 var(--space-lg);
+}
+.cover-story__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.cover-story__figure figcaption {
+  font-family: var(--font-body);
+  font-size: var(--font-size-caption);
+  font-style: italic;
+  color: var(--color-muted);
+  margin-top: var(--space-xs);
+  line-height: 1.5;
+}
+
 .cover-story__body {
   max-width: var(--measure);
   font-size: var(--font-size-body);

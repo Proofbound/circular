@@ -10,6 +10,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/articles/**/*.jpeg": "articles" });
   eleventyConfig.addPassthroughCopy({ "src/articles/**/*.jpg": "articles" });
   eleventyConfig.addPassthroughCopy({ "src/articles/**/*.png": "articles" });
+  eleventyConfig.addPassthroughCopy({ "src/articles/**/*.svg": "articles" });
 
   // Collection: articles sorted by order field
   eleventyConfig.addCollection("articles", function (collectionApi) {

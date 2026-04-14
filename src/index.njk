@@ -30,6 +30,13 @@ permalink: "index.html"
 
         <p class="cover-story__byline">By {{ featured.data.author }}</p>
 
+        {% if featured.data.leadImage %}
+        <figure class="cover-story__figure">
+          <img src="articles/{{ featured.data.leadImage.src }}" alt="{{ featured.data.leadImage.alt }}">
+          {% if featured.data.leadImage.caption %}<figcaption>{{ featured.data.leadImage.caption | safe }}</figcaption>{% endif %}
+        </figure>
+        {% endif %}
+
         <div class="cover-story__body">
           {{ featured.templateContent | firstParagraphs(2) | safe }}
         </div>
