@@ -20,6 +20,16 @@ module.exports = function (eleventyConfig) {
       });
   });
 
+  // Extract the first N rendered paragraphs from a templateContent string.
+  // Used on the front page to show a lede excerpt of the featured article.
+  eleventyConfig.addFilter("firstParagraphs", function (html, n) {
+    if (!html) return "";
+    n = n || 2;
+    var matches = html.match(/<p[\s\S]*?<\/p>/g);
+    if (!matches) return "";
+    return matches.slice(0, n).join("\n");
+  });
+
   // Nunjucks filter: selectattr (for filtering collections by data field)
   eleventyConfig.addFilter("selectattr", function (arr, attr, value) {
     if (arguments.length === 2) {

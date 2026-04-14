@@ -9,64 +9,61 @@
 </head>
 <body>
 
+  {% if isArticle %}
+  <div class="topnav">
+    <div class="container">
+      <a href="../index.html">The Fortnightly Circular</a>
+      <span class="topnav__sep">·</span>
+      <a href="../index.html">No. {{ site.issue }}</a>
+      <span class="topnav__sep">·</span>
+      <a href="../contributors.html">Contributors</a>
+      <a href="{{ site.signInUrl }}" class="topnav__signin" data-signin>Sign in</a>
+    </div>
+  </div>
+  {% endif %}
+
   <header class="masthead">
-    <a href="{{ '../' if isArticle else '' }}index.html" class="masthead__image-wrap">
-      <img src="{{ '../' if isArticle else '' }}assets/circular-masthead-horizontal-clipped-nonames.jpg"
-           alt="The Fortnightly Circular &mdash; Conducted for the Benefit of Persons of Discernment &amp; Enquiring Disposition"
-           class="masthead__image">
+    <a href="{{ '../' if isArticle else '' }}index.html" class="masthead__link">
+      <h1 class="masthead__title">The Fortnightly Circular</h1>
+      <span class="masthead__subtitle">Conducted for the Benefit of Persons of Discernment &amp; Enquiring Disposition</span>
     </a>
-    <div class="masthead__meta-bar">
-      <span>Vol. {{ site.volume }} &middot; No. {{ site.issue }}</span>
+    <div class="masthead__meta">
+      <span>Vol. {{ site.volume }}</span>
+      <span>No. {{ site.issue }}</span>
       <span>{{ site.season }}</span>
     </div>
   </header>
 
-  {% if isArticle %}
-  <nav class="nav-bar" aria-label="Navigation">
-    <div class="container">
-      <div class="nav-bar__inner">
-        <a href="../index.html">All Articles</a>
-        <div class="nav-bar__actions">
-          <a href="{{ site.signInUrl }}" data-signin>Sign in</a>
-        </div>
-      </div>
-    </div>
-  </nav>
-  {% endif %}
-
   {{ content | safe }}
 
-  <footer>
+  <footer class="site-footer">
     <div class="container">
-      <div class="footer__inner">
-        <div class="footer__brand">{% if isArticle %}<a href="../index.html" style="color:inherit;text-decoration:none;">{% endif %}The Fortnightly Circular{% if isArticle %}</a>{% endif %}</div>
-        <div>Vol. {{ site.volume }}, No. {{ site.issue }} &middot; {{ site.season }}</div>
+      <div class="site-footer__subscribe">
+        <h2 class="site-footer__subscribe-heading">Subscribe to the Circular</h2>
+        <p class="site-footer__subscribe-dek">New numbers delivered fortnightly, by electronic post.</p>
+        <form class="subscribe-form" id="subscribe-form"
+              method="post"
+              action="{{ site.platformApiUrl }}/subscribe"
+              onsubmit="return false">
+          <input type="email" name="email" placeholder="your@email.address" aria-label="Email address" required>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-10000px">
+          <button type="submit">Subscribe</button>
+        </form>
+        <div class="subscribe-form__status" id="subscribe-status" aria-live="polite"></div>
+      </div>
+      <div class="site-footer__meta">
+        <span class="site-footer__brand">The Fortnightly Circular</span>
+        Vol. {{ site.volume }} &middot; No. {{ site.issue }} &middot; {{ site.season }}
+        &nbsp;&middot;&nbsp;
+        <a href="{{ '../' if isArticle else '' }}contributors.html">Contributors</a>
       </div>
     </div>
   </footer>
 
-  <!-- Subscribe modal -->
-  <div class="subscribe-modal" id="subscribe-modal" aria-hidden="true">
-    <div class="subscribe-modal__backdrop"></div>
-    <div class="subscribe-modal__dialog" role="dialog" aria-labelledby="subscribe-modal-title">
-      <button class="subscribe-modal__close" aria-label="Close">&times;</button>
-      <h2 id="subscribe-modal-title">Subscribe to the Circular</h2>
-      <p class="subscribe-modal__dek">New issues delivered fortnightly to your inbox.</p>
-      <form class="subscribe-modal__form" id="subscribe-form"
-            method="post"
-            action="{{ site.platformApiUrl }}/subscribe"
-            onsubmit="return false">
-        <input type="email" name="email" placeholder="Your email address" required>
-        <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-10000px;display:none">
-        <button type="submit" class="btn btn--filled">Subscribe</button>
-      </form>
-      <div class="subscribe-modal__status" id="subscribe-status"></div>
-    </div>
-  </div>
+  <p class="print-footer">The Fortnightly Circular &middot; No. {{ site.issue }} &middot; {{ site.season }}</p>
 
   <!-- Supabase JS client (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <!-- Runtime config (public keys only — safe for client-side) -->
   <script>
     window.__CIRCULAR__ = {
       supabaseUrl:    "{{ site.supabaseUrl }}",

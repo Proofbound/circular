@@ -9,125 +9,78 @@ permalink: "index.html"
   {% set featured = collections.articles | selectattr("data.order", "equalto", 1) | first %}
 {% endif %}
 
-  <!-- Nav bar -->
-  <nav class="nav-bar" aria-label="Sections">
-    <div class="container">
-      <div class="nav-bar__inner">
-        <a href="#cover" class="active">Cover Story</a>
-        <a href="#in-this-issue">In This Issue</a>
-        <a href="contributors.html">Contributors</a>
-        <div class="nav-bar__actions">
-          <a href="{{ site.signInUrl }}" data-signin>Sign in</a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Subscribe banner -->
+<main>
   <div class="container">
-    <div class="subscribe-banner">
-      <div class="subscribe-banner__text">
-        <strong>Subscribe to the Circular</strong> — New issues delivered fortnightly.
-      </div>
-      <button type="button" class="btn btn--sm btn--filled" data-subscribe>Subscribe</button>
-    </div>
-  </div>
+    <div class="front-page">
 
-  <main>
-    <div class="container">
-      <div class="page-layout">
-
-        <!-- Cover story -->
-        <div class="page-layout__main">
-          <section class="hero--cover" id="cover" aria-label="Cover story">
-            <div class="cover-kicker">
-              <span class="cover-kicker__label">Cover Story</span>
-              <span class="cover-kicker__rule"></span>
-              <span class="cover-kicker__issue">Vol. {{ site.volume }} &middot; No. {{ site.issue }}</span>
-            </div>
-
-            <article class="article-card article-card--cover">
-              {% if featured.data.leadImage %}
-              <figure class="article-card--cover__figure">
-                <img src="articles/{{ featured.data.leadImage.src }}" alt="{{ featured.data.leadImage.alt | default('') }}">
-                {% if featured.data.leadImage.caption %}
-                <figcaption>{{ featured.data.leadImage.caption | safe }}</figcaption>
-                {% endif %}
-              </figure>
-              {% endif %}
-
-              <div class="article-card__section">{{ featured.data.section }} &middot; {{ featured.data.subsection }}</div>
-              <h1 class="article-card__title">
-                <a href="articles/{{ featured.fileSlug }}.html">{{ featured.data.title }}</a>
-              </h1>
-              <p class="article-card__dek">{{ featured.data.dek | safe }}</p>
-              <p class="article-card__byline">By {{ featured.data.author }} &nbsp;&middot;&nbsp; {{ featured.data.pubDate }}</p>
-              <p class="article-card__readlink">
-                <a href="articles/{{ featured.fileSlug }}.html">Read the cover story &rarr;</a>
-              </p>
-            </article>
-          </section>
-
-          <!-- Contributors blurb -->
-          <section class="cover-footnote" id="contributors-blurb">
-            <p>
-              <em>The Fortnightly Circular</em> publishes longform analysis and occasional lighter fare
-              on the intersections of technology, geopolitics, finance, and culture.
-              <a href="contributors.html">Meet the contributors &rarr;</a>
-            </p>
-          </section>
+      <!-- Cover story -->
+      <article class="cover-story" aria-label="Cover story">
+        <div class="cover-story__kicker">
+          <span>{{ featured.data.section }}</span>
+          {% if featured.data.subsection %}<span class="sep">·</span><span>{{ featured.data.subsection }}</span>{% endif %}
         </div>
 
-        <!-- Sidebar: In This Issue -->
-        <aside class="page-layout__sidebar" id="in-this-issue" aria-label="In this issue">
-          <button class="toc-toggle btn btn--sm"
-                  aria-expanded="false"
-                  aria-controls="toc-sidebar-content">In This Issue</button>
-          <div class="toc-sidebar" id="toc-sidebar-content">
-            <div class="toc-sidebar__title">In This Issue</div>
+        <h2 class="cover-story__title">
+          <a href="articles/{{ featured.fileSlug }}.html">{{ featured.data.title }}</a>
+        </h2>
 
-            <div class="toc-sidebar__section">Analysis</div>
-            <ul class="toc-sidebar__list">
-              {% for article in analysis %}
-                {% if not article.data.featured %}
-                <li class="toc-item">
-                  <a href="articles/{{ article.fileSlug }}.html" class="toc-item__link">
-                    <span class="toc-item__title">{{ article.data.title }}</span>
-                    {% if article.data.subsection %}
-                    <span class="toc-item__kicker">{{ article.data.subsection }}</span>
-                    {% endif %}
-                    {% if article.data.dek %}
-                    <span class="toc-item__dek">{{ article.data.dek | safe }}</span>
-                    {% endif %}
-                  </a>
-                </li>
-                {% endif %}
-              {% endfor %}
-            </ul>
+        {% if featured.data.dek %}
+        <p class="cover-story__dek">{{ featured.data.dek | safe }}</p>
+        {% endif %}
 
-            <div class="toc-sidebar__section">Light Reading</div>
-            <ul class="toc-sidebar__list">
-              {% for article in lightReading %}
-                {% if not article.data.featured %}
-                <li class="toc-item">
-                  <a href="articles/{{ article.fileSlug }}.html" class="toc-item__link">
-                    <span class="toc-item__title">{{ article.data.title }}</span>
-                    {% if article.data.subsection %}
-                    <span class="toc-item__kicker">{{ article.data.subsection }}</span>
-                    {% endif %}
-                    {% if article.data.dek %}
-                    <span class="toc-item__dek">{{ article.data.dek | safe }}</span>
-                    {% endif %}
-                  </a>
-                </li>
-                {% endif %}
-              {% endfor %}
-            </ul>
+        <p class="cover-story__byline">By {{ featured.data.author }}</p>
 
-            <div class="toc-sidebar__issue-footer">{{ site.season }}</div>
-          </div>
-        </aside>
+        <div class="cover-story__body">
+          {{ featured.templateContent | firstParagraphs(2) | safe }}
+        </div>
 
-      </div>
+        <a class="cover-story__readmore" href="articles/{{ featured.fileSlug }}.html">Continue reading →</a>
+      </article>
+
+      <!-- "In This Number" sidebar -->
+      <aside class="in-this-number" aria-label="In this number">
+        <div class="in-this-number__heading">In This Number</div>
+
+        {% if analysis | length %}
+        <div class="in-this-number__section">Analysis</div>
+        <ul class="in-this-number__list">
+          {% for article in analysis %}
+            {% if not article.data.featured %}
+            <li class="in-this-number__item">
+              <span class="in-this-number__author">{{ article.data.author }}</span>
+              <a class="in-this-number__title" href="articles/{{ article.fileSlug }}.html">{{ article.data.title }}</a>
+              {% if article.data.dek %}
+              <span class="in-this-number__dek">{{ article.data.dek | safe }}</span>
+              {% endif %}
+            </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if lightReading | length %}
+        <div class="in-this-number__section">Light Reading</div>
+        <ul class="in-this-number__list">
+          {% for article in lightReading %}
+            {% if not article.data.featured %}
+            <li class="in-this-number__item">
+              <span class="in-this-number__author">{{ article.data.author }}</span>
+              <a class="in-this-number__title" href="articles/{{ article.fileSlug }}.html">{{ article.data.title }}</a>
+              {% if article.data.dek %}
+              <span class="in-this-number__dek">{{ article.data.dek | safe }}</span>
+              {% endif %}
+            </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </aside>
+
     </div>
-  </main>
+
+    <section class="previous-numbers" aria-label="Previous numbers">
+      <div class="previous-numbers__heading">Previous Numbers</div>
+      <p>This is the inaugural number. Future issues will be listed here.</p>
+    </section>
+  </div>
+</main>

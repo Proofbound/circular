@@ -1,43 +1,33 @@
 ---
 layout: base.njk
 permalink: "contributors.html"
+title: "Contributors"
 ---
+<main>
+  <div class="container">
+    <div class="contributors-page">
 
-  <nav class="nav-bar" aria-label="Navigation">
-    <div class="container">
-      <div class="nav-bar__inner">
-        <a href="index.html">All Articles</a>
-        <a href="contributors.html" class="active">Contributors</a>
-        <div class="nav-bar__actions">
-          <a href="{{ site.signInUrl }}" data-signin>Sign in</a>
-        </div>
-      </div>
-    </div>
-  </nav>
+      <header class="contributors-page__header">
+        <h1 class="contributors-page__title">Contributors</h1>
+        <p class="contributors-page__dek">
+          <em>The Fortnightly Circular</em> publishes longform analysis and occasional lighter fare on the intersections of technology, geopolitics, finance, and culture. Every piece is editorially directed, researched with AI assistance, and held to the same standard of intellectual honesty we have always tried to maintain. The editors are responsible for every word published&thinsp;&mdash;&thinsp;including the words the machine drafted.
+        </p>
+      </header>
 
-  <main>
-    <div class="container">
-      <div class="contributors-page">
+      <hr class="ornamental">
 
-        <header class="contributors-page__header">
-          <h1 class="contributors-page__title">Contributors</h1>
-          <p class="contributors-page__dek">
-            <em>The Fortnightly Circular</em> publishes longform analysis and occasional lighter fare on the intersections of technology, geopolitics, finance, and culture. Every piece is editorially directed, researched with AI assistance, and held to the same standard of intellectual honesty we have always tried to maintain. The editors are responsible for every word published&thinsp;&mdash;&thinsp;including the words the machine drafted.
-          </p>
-        </header>
-
-        <hr class="rule--heavy rule--accent" style="margin: 0 0 2rem;">
-
-        <div class="contributors__list">
-          {% for author in authors %}
-          <div class="contributor-card contributor-card--full">
-            <h2 class="contributor-card__name">{{ author.name }}</h2>
-            <div class="contributor-card__role">{{ author.role }} · <em>{{ author.column }}</em></div>
-            <div class="contributor-card__bio">{{ author.bio | safe }}</div>
+      <div class="contributors__list">
+        {% for author in authors %}
+        <div class="contributor-card">
+          <h2 class="contributor-card__name">{{ author.name }}</h2>
+          <div class="contributor-card__role">
+            {{ author.role }}{% if author.column %} &middot; <em>{{ author.column }}</em>{% endif %}
           </div>
-          {% endfor %}
+          <div class="contributor-card__bio">{{ author.bio | safe }}</div>
         </div>
-
+        {% endfor %}
       </div>
+
     </div>
-  </main>
+  </div>
+</main>
