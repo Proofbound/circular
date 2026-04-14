@@ -155,38 +155,40 @@ footer a:visited { color: var(--rule); }
 }
 
 /* ============================================================
-   HERO / FEATURE ROW
+   COVER STORY HERO (index page)
    ============================================================ */
-.hero {
-  padding: 3.5rem 0 2.5rem;
-  border-bottom: 1px solid var(--rule);
-}
-.hero__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: start;
-}
-.hero__lead {
-  border-right: 1px solid var(--rule);
-  padding-right: 3rem;
-}
-.hero__secondary {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.hero--cover {
+  padding: 3rem 0 3.5rem;
+  border-top: 3px solid var(--ink);
+  border-bottom: 3px solid var(--ink);
 }
 
-/* ============================================================
-   ARTICLE CARDS — generic
-   ============================================================ */
+.cover-kicker {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.cover-kicker__rule {
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+.cover-kicker__issue {
+  color: var(--ink-light);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+}
+
+/* -- Article card: generic ---------------------------------- */
 .article-card {
   transition: transform var(--transition-fast);
-}
-.section-block__grid .article-card:hover,
-.hero__lead .article-card:hover,
-.hero__secondary .article-card:hover {
-  transform: translateY(-2px);
 }
 .article-card__section {
   font-family: var(--font-sans);
@@ -195,75 +197,99 @@ footer a:visited { color: var(--rule); }
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.6rem;
 }
 .article-card__title {
   font-family: var(--font-display);
   font-size: 1.55rem;
   font-weight: 700;
   line-height: 1.25;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
   overflow-wrap: break-word;
   word-break: break-word;
 }
 .article-card__title a { color: var(--ink); }
 .article-card__title a:hover { color: var(--accent); text-decoration: none; }
-.article-card--hero .article-card__title { font-size: 2.4rem; }
 .article-card__byline {
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--ink-light);
+  letter-spacing: 0.04em;
   margin-bottom: 0.5rem;
 }
 .article-card__dek {
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.6;
   color: var(--ink-muted);
-}
-.article-card--small .article-card__title { font-size: 1.1rem; }
-.article-card--small .article-card__dek { font-size: 0.88rem; }
-
-/* -- Divider between small cards ---------------------------- */
-.article-card + .article-card {
-  border-top: 1px solid var(--rule-light);
-  padding-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-/* ============================================================
-   SECTION BLOCKS (index page)
-   ============================================================ */
-.section-block {
-  padding: 3rem 0;
-  border-bottom: 1px solid var(--rule);
-}
-.section-block:last-child { border-bottom: none; }
-.section-block__header {
-  display: flex;
-  align-items: baseline;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-.section-block__name {
+/* -- Article card: cover variant ---------------------------- */
+.article-card--cover .article-card__title {
   font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--ink);
+  font-size: clamp(2.6rem, 5.2vw, 4.2rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.2rem;
+  max-width: 18ch;
 }
-.section-block__rule {
-  flex: 1;
-  border-top: 1px solid var(--rule);
-  margin-bottom: 3px;
+.article-card--cover .article-card__dek {
+  font-family: var(--font-serif);
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  max-width: 42ch;
+  margin-bottom: 1.4rem;
 }
-.section-block__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+.article-card--cover .article-card__byline {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 1.2rem;
 }
-.section-block__grid--two { grid-template-columns: repeat(2, 1fr); gap: 3rem; }
-.section-block__grid .article-card { border-right: 1px solid var(--rule-light); padding-right: 2rem; }
-.section-block__grid .article-card:last-child { border-right: none; padding-right: 0; }
-.section-block__grid--two .article-card { border-right: 1px solid var(--rule); padding-right: 3rem; }
-.section-block__grid--two .article-card:last-child { border-right: none; padding-right: 0; }
+.article-card--cover .article-card__readlink {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.article-card--cover .article-card__readlink a { color: var(--accent); }
+.article-card--cover .article-card__readlink a:hover {
+  color: var(--accent-mid);
+  text-decoration: none;
+}
+.article-card--cover__figure {
+  margin: 0 0 2rem;
+}
+.article-card--cover__figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--rule);
+}
+.article-card--cover__figure figcaption {
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  color: var(--ink-light);
+  margin-top: 0.5rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* -- Cover-page footnote (contributors blurb) -------------- */
+.cover-footnote {
+  padding: 2rem 0 0;
+}
+.cover-footnote p {
+  max-width: 600px;
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+  line-height: 1.75;
+}
 
 /* ============================================================
    CONTRIBUTORS (About section)
@@ -332,44 +358,90 @@ footer a:visited { color: var(--rule); }
   background: var(--parchment);
   border: 1px solid var(--rule);
   border-top: 3px solid var(--accent);
-  padding: 1.5rem;
+  padding: 1.75rem 1.5rem;
   font-family: var(--font-sans);
 }
 .toc-sidebar__title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--ink);
+  padding-bottom: 0.8rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid var(--ink);
+}
+.toc-sidebar__section {
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink-light);
-  margin-bottom: 1rem;
+  color: var(--accent);
+  margin: 1.2rem 0 0.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--rule);
 }
-.toc-sidebar__section {
-  font-size: 0.72rem;
+.toc-sidebar__list { list-style: none; }
+.toc-sidebar__list li.toc-item {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--rule-light);
+}
+.toc-sidebar__list li.toc-item:last-child { border-bottom: none; }
+.toc-item__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.toc-item__link:hover { text-decoration: none; }
+.toc-item__link:hover .toc-item__title { color: var(--accent); }
+.toc-item__title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+.toc-item__kicker {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent);
-  margin: 1rem 0 0.4rem;
+  margin-bottom: 0.3rem;
 }
-.toc-sidebar__list { list-style: none; }
-.toc-sidebar__list li {
-  padding: 0.3rem 0;
-  border-bottom: 1px solid var(--rule-light);
-  font-size: 0.85rem;
-  line-height: 1.4;
+.toc-item__dek {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: var(--font-serif);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--ink-muted);
 }
-.toc-sidebar__list li:last-child { border-bottom: none; }
-.toc-sidebar__list a { color: var(--ink-muted); }
-.toc-sidebar__list a:hover { color: var(--accent); text-decoration: none; }
+.toc-sidebar__issue-footer {
+  margin-top: 1.4rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.72rem;
+  color: var(--ink-light);
+  letter-spacing: 0.08em;
+  text-align: center;
+}
 
 /* ============================================================
    MAIN LAYOUT (index: content + sidebar)
    ============================================================ */
 .page-layout {
   display: grid;
-  grid-template-columns: 1fr 260px;
-  gap: 3.5rem;
-  padding: 3rem 0 4rem;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 3rem;
+  padding: 2.5rem 0 4rem;
   align-items: start;
 }
 .page-layout__sidebar { position: sticky; top: 1.5rem; }
@@ -887,14 +959,11 @@ footer a:hover { color: var(--cream); }
    RESPONSIVE
    ============================================================ */
 @media (max-width: 800px) {
-  .hero__grid { grid-template-columns: 1fr; gap: 2rem; }
-  .hero__lead { border-right: none; padding-right: 0; border-bottom: 1px solid var(--rule); padding-bottom: 2rem; }
-  .page-layout { grid-template-columns: 1fr; }
+  .page-layout { grid-template-columns: 1fr; gap: 2rem; }
   .page-layout__sidebar { position: static; }
-  .section-block__grid { grid-template-columns: 1fr; }
-  .section-block__grid .article-card { border-right: none; padding-right: 0; border-bottom: 1px solid var(--rule-light); padding-bottom: 1.5rem; }
-  .section-block__grid--two { grid-template-columns: 1fr; }
-  .section-block__grid--two .article-card { border-right: none; padding-right: 0; }
+  .hero--cover { padding: 2rem 0 2.5rem; }
+  .article-card--cover .article-card__title { max-width: none; }
+  .article-card--cover .article-card__dek { max-width: none; }
   .toc-toggle { display: block; }
   .toc-sidebar { display: none; }
   .toc-sidebar--open { display: block; }

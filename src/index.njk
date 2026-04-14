@@ -4,13 +4,17 @@ permalink: "index.html"
 ---
 {% set analysis = collections.articles | selectattr("data.section", "equalto", "Analysis") %}
 {% set lightReading = collections.articles | selectattr("data.section", "equalto", "Light Reading") %}
+{% set featured = collections.articles | selectattr("data.featured", "equalto", true) | first %}
+{% if not featured %}
+  {% set featured = collections.articles | selectattr("data.order", "equalto", 1) | first %}
+{% endif %}
 
   <!-- Nav bar -->
   <nav class="nav-bar" aria-label="Sections">
     <div class="container">
       <div class="nav-bar__inner">
-        <a href="#analysis" class="active">Analysis</a>
-        <a href="#light-reading">Light Reading</a>
+        <a href="#cover" class="active">Cover Story</a>
+        <a href="#in-this-issue">In This Issue</a>
         <a href="contributors.html">Contributors</a>
         <div class="nav-bar__actions">
           <a href="{{ site.signInUrl }}" data-signin>Sign in</a>
@@ -33,108 +37,49 @@ permalink: "index.html"
     <div class="container">
       <div class="page-layout">
 
-        <!-- Content column -->
+        <!-- Cover story -->
         <div class="page-layout__main">
-
-          <!-- HERO: featured articles -->
-          <section class="hero" aria-label="Featured">
-            <div class="hero__grid">
-
-              <!-- Lead feature -->
-              <div class="hero__lead">
-                {% set lead = collections.articles | selectattr("data.order", "equalto", 3) | first %}
-                <article class="article-card article-card--hero">
-                  <div class="article-card__section">{{ lead.data.section }} &middot; {{ lead.data.subsection }}</div>
-                  <h2 class="article-card__title">
-                    <a href="articles/{{ lead.fileSlug }}.html">{{ lead.data.title }}</a>
-                  </h2>
-                  <p class="article-card__byline">{{ lead.data.author }} — {{ lead.data.pubDate }}</p>
-                  <p class="article-card__dek">{{ lead.data.dek | safe }}</p>
-                </article>
-              </div>
-
-              <!-- Secondary features -->
-              <div class="hero__secondary">
-                {% set secondary1 = collections.articles | selectattr("data.order", "equalto", 2) | first %}
-                <article class="article-card article-card--small">
-                  <div class="article-card__section">{{ secondary1.data.section }} &middot; {{ secondary1.data.subsection }}</div>
-                  <h3 class="article-card__title">
-                    <a href="articles/{{ secondary1.fileSlug }}.html">{{ secondary1.data.title }}</a>
-                  </h3>
-                  <p class="article-card__byline">{{ secondary1.data.author }} — {{ secondary1.data.pubDate }}</p>
-                  <p class="article-card__dek">{{ secondary1.data.dek | safe }}</p>
-                </article>
-
-                {% set secondary2 = collections.articles | selectattr("data.order", "equalto", 4) | first %}
-                <article class="article-card article-card--small">
-                  <div class="article-card__section">{{ secondary2.data.section }} &middot; {{ secondary2.data.subsection }}</div>
-                  <h3 class="article-card__title">
-                    <a href="articles/{{ secondary2.fileSlug }}.html">{{ secondary2.data.title }}</a>
-                  </h3>
-                  <p class="article-card__byline">{{ secondary2.data.author }} — {{ secondary2.data.pubDate }}</p>
-                  <p class="article-card__dek">{{ secondary2.data.dek | safe }}</p>
-                </article>
-              </div>
-
+          <section class="hero--cover" id="cover" aria-label="Cover story">
+            <div class="cover-kicker">
+              <span class="cover-kicker__label">Cover Story</span>
+              <span class="cover-kicker__rule"></span>
+              <span class="cover-kicker__issue">Vol. {{ site.volume }} &middot; No. {{ site.issue }}</span>
             </div>
+
+            <article class="article-card article-card--cover">
+              {% if featured.data.leadImage %}
+              <figure class="article-card--cover__figure">
+                <img src="{{ featured.data.leadImage.src }}" alt="{{ featured.data.leadImage.alt | default('') }}">
+                {% if featured.data.leadImage.caption %}
+                <figcaption>{{ featured.data.leadImage.caption | safe }}</figcaption>
+                {% endif %}
+              </figure>
+              {% endif %}
+
+              <div class="article-card__section">{{ featured.data.section }} &middot; {{ featured.data.subsection }}</div>
+              <h1 class="article-card__title">
+                <a href="articles/{{ featured.fileSlug }}.html">{{ featured.data.title }}</a>
+              </h1>
+              <p class="article-card__dek">{{ featured.data.dek | safe }}</p>
+              <p class="article-card__byline">By {{ featured.data.author }} &nbsp;&middot;&nbsp; {{ featured.data.pubDate }}</p>
+              <p class="article-card__readlink">
+                <a href="articles/{{ featured.fileSlug }}.html">Read the cover story &rarr;</a>
+              </p>
+            </article>
           </section>
 
-          <hr class="rule--heavy rule--accent" style="margin: 0 0 0.5rem;">
-
-          <!-- ANALYSIS section -->
-          <section class="section-block" id="analysis">
-            <div class="section-block__header">
-              <h2 class="section-block__name">Analysis</h2>
-              <div class="section-block__rule"></div>
-            </div>
-            <div class="section-block__grid">
-              {% for article in analysis %}
-              <article class="article-card">
-                <div class="article-card__section">{{ article.data.subsection }}</div>
-                <h3 class="article-card__title">
-                  <a href="articles/{{ article.fileSlug }}.html">{{ article.data.title }}</a>
-                </h3>
-                <p class="article-card__byline">{{ article.data.author | default(article.data.pubDate) }}</p>
-                <p class="article-card__dek">{{ article.data.dek | safe }}</p>
-                <p class="mt-2"><a href="articles/{{ article.fileSlug }}.html">Read &rarr;</a></p>
-              </article>
-              {% endfor %}
-            </div>
-          </section>
-
-          <!-- LIGHT READING section -->
-          <section class="section-block" id="light-reading">
-            <div class="section-block__header">
-              <h2 class="section-block__name">Light Reading</h2>
-              <div class="section-block__rule"></div>
-            </div>
-            <div class="section-block__grid">
-              {% for article in lightReading %}
-              <article class="article-card">
-                <div class="article-card__section">{{ article.data.subsection }}</div>
-                <h3 class="article-card__title">
-                  <a href="articles/{{ article.fileSlug }}.html">{{ article.data.title }}</a>
-                </h3>
-                <p class="article-card__byline">{{ article.data.pubDate }}</p>
-                <p class="article-card__dek">{{ article.data.dek | safe }}</p>
-                <p class="mt-2"><a href="articles/{{ article.fileSlug }}.html">Read &rarr;</a></p>
-              </article>
-              {% endfor %}
-            </div>
-          </section>
-
-          <!-- CONTRIBUTORS link -->
-          <section class="section-block" id="contributors" style="padding-bottom:0; border-bottom:none;">
-            <p style="max-width:600px; font-size:0.95rem; color:var(--ink-muted); line-height:1.75;">
-              <em>The Fortnightly Circular</em> publishes longform analysis and occasional lighter fare on the intersections of technology, geopolitics, finance, and culture.
+          <!-- Contributors blurb -->
+          <section class="cover-footnote" id="contributors-blurb">
+            <p>
+              <em>The Fortnightly Circular</em> publishes longform analysis and occasional lighter fare
+              on the intersections of technology, geopolitics, finance, and culture.
               <a href="contributors.html">Meet the contributors &rarr;</a>
             </p>
           </section>
-
         </div>
 
-        <!-- Sidebar -->
-        <aside class="page-layout__sidebar" aria-label="Table of contents">
+        <!-- Sidebar: In This Issue -->
+        <aside class="page-layout__sidebar" id="in-this-issue" aria-label="In this issue">
           <button class="toc-toggle btn btn--sm"
                   aria-expanded="false"
                   aria-controls="toc-sidebar-content">In This Issue</button>
@@ -144,20 +89,42 @@ permalink: "index.html"
             <div class="toc-sidebar__section">Analysis</div>
             <ul class="toc-sidebar__list">
               {% for article in analysis %}
-              <li><a href="articles/{{ article.fileSlug }}.html">{{ article.data.title }}{% if article.data.subsection %} — <em>{{ article.data.subsection }}</em>{% endif %}</a></li>
+                {% if not article.data.featured %}
+                <li class="toc-item">
+                  <a href="articles/{{ article.fileSlug }}.html" class="toc-item__link">
+                    <span class="toc-item__title">{{ article.data.title }}</span>
+                    {% if article.data.subsection %}
+                    <span class="toc-item__kicker">{{ article.data.subsection }}</span>
+                    {% endif %}
+                    {% if article.data.dek %}
+                    <span class="toc-item__dek">{{ article.data.dek | safe }}</span>
+                    {% endif %}
+                  </a>
+                </li>
+                {% endif %}
               {% endfor %}
             </ul>
 
             <div class="toc-sidebar__section">Light Reading</div>
             <ul class="toc-sidebar__list">
               {% for article in lightReading %}
-              <li><a href="articles/{{ article.fileSlug }}.html">{{ article.data.title }}</a></li>
+                {% if not article.data.featured %}
+                <li class="toc-item">
+                  <a href="articles/{{ article.fileSlug }}.html" class="toc-item__link">
+                    <span class="toc-item__title">{{ article.data.title }}</span>
+                    {% if article.data.subsection %}
+                    <span class="toc-item__kicker">{{ article.data.subsection }}</span>
+                    {% endif %}
+                    {% if article.data.dek %}
+                    <span class="toc-item__dek">{{ article.data.dek | safe }}</span>
+                    {% endif %}
+                  </a>
+                </li>
+                {% endif %}
               {% endfor %}
             </ul>
 
-            <div style="margin-top:1.2rem; font-size:0.78rem; color:var(--ink-light); font-family:var(--font-sans);">
-              {{ site.season }}
-            </div>
+            <div class="toc-sidebar__issue-footer">{{ site.season }}</div>
           </div>
         </aside>
 
