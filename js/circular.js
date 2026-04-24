@@ -47,14 +47,25 @@
       e.preventDefault();
       var email = form.querySelector('input[name="email"]').value.trim();
       var honeypot = form.querySelector('input[name="website"]').value;
+      var turnstileField = form.querySelector('[name="cf-turnstile-response"]');
+      var turnstileToken = turnstileField ? turnstileField.value : '';
+
+      if (cfg.turnstileSiteKey && !turnstileToken) {
+        status.textContent = 'Please complete the verification challenge.';
+        status.className = 'subscribe-form__status subscribe-form__status--error';
+        return;
+      }
 
       status.textContent = 'Subscribing\u2026';
       status.className = 'subscribe-form__status';
 
+      var body = { email: email, product: 'circular', website: honeypot };
+      if (turnstileToken) body.turnstile_token = turnstileToken;
+
       fetch(apiUrl + '/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, product: 'circular', website: honeypot })
+        body: JSON.stringify(body)
       })
         .then(function (res) {
           return res.json().then(function (data) {
@@ -69,11 +80,13 @@
           } else {
             status.textContent = (result.data && result.data.detail) || 'Something went wrong.';
             status.className = 'subscribe-form__status subscribe-form__status--error';
+            if (window.turnstile) window.turnstile.reset();
           }
         })
         .catch(function () {
           status.textContent = 'Could not reach the server. Please try again later.';
           status.className = 'subscribe-form__status subscribe-form__status--error';
+          if (window.turnstile) window.turnstile.reset();
         });
     });
   }

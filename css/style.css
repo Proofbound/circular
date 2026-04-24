@@ -712,10 +712,17 @@ hr.full {
 }
 .subscribe-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 0;
   justify-content: center;
   max-width: 26rem;
   margin: 0 auto;
+}
+.subscribe-form__turnstile {
+  flex-basis: 100%;
+  margin-top: var(--space-sm);
+  display: flex;
+  justify-content: center;
 }
 .subscribe-form input[type="email"] {
   flex: 1;
