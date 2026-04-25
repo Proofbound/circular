@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% if title %}{{ title }} — {{ site.title }}{% else %}{{ pageTitle | default(site.title) }}{% endif %}</title>
   <meta name="description" content="{{ dek | default(description) | default(site.description) }}">
+  <link rel="stylesheet" href="https://brand.proofbound.com/proofbound-design-system/proofbound.css">
   <link rel="stylesheet" href="{{ '../' if isArticle else '' }}css/style.css">
 </head>
 <body>
@@ -62,7 +63,7 @@
         <div class="site-footer__colophon">
           <span>Published by</span>
           <a href="https://proofbound.com" class="site-footer__colophon-link" aria-label="Proofbound">
-            <img src="https://brand.proofbound.com/logos/proofbound-logo.svg" alt="" class="site-footer__colophon-logo" width="18" height="18">
+            <img src="https://brand.proofbound.com/proofbound-design-system/assets/proofbound-logo.svg" alt="" class="site-footer__colophon-logo" width="18" height="18">
             <span class="site-footer__colophon-name">Proofbound</span>
           </a>
         </div>
