@@ -8,40 +8,33 @@
   <link rel="stylesheet" href="https://brand.proofbound.com/proofbound-design-system/proofbound.css">
   <link rel="stylesheet" href="{{ '../' if isArticle else '' }}css/style.css">
 </head>
-<body>
+<body data-imprint="circular">
 
-  {% if isArticle %}
-  <div class="topnav">
-    <div class="container">
-      <a href="../index.html">The Fortnightly Circular</a>
-      <span class="topnav__sep">·</span>
-      <a href="../index.html">No. {{ site.issue }}</a>
-      <span class="topnav__sep">·</span>
-      <a href="../contributors.html">Contributors</a>
-      <a href="{{ site.signInUrl }}" class="topnav__signin" data-signin>Sign in</a>
-    </div>
+  <div class="container">
+    <header class="pb-masthead">
+      <a class="pb-masthead__brand" href="{{ '../' if isArticle else '' }}index.html">
+        <div class="pb-endorsement">
+          <span class="pb-endorsement__mark">
+            <svg width="36" height="36" viewBox="0 0 80 80"><polygon points="40,5 65,22.5 65,57.5 40,75 15,57.5 15,22.5" fill="currentColor"/><text x="40" y="50" text-anchor="middle" font-family="Crimson Pro, Georgia, serif" font-size="28" font-weight="600" font-style="italic" fill="#FAF7F1">C</text></svg>
+          </span>
+          <div>
+            <div class="pb-endorsement__name">The Fortnightly Circular</div>
+          </div>
+        </div>
+      </a>
+      <nav class="pb-masthead__nav">
+        Vol. {{ site.volume }}<span>·</span>No. {{ site.issue }}<span>·</span>{{ site.season }}<span>·</span><a href="{{ '../' if isArticle else '' }}contributors.html"{% if title == 'Contributors' %} aria-current="page"{% endif %}>Contributors</a><span>·</span><a href="{{ site.signInUrl }}" data-signin>Sign in</a>
+      </nav>
+    </header>
   </div>
-  {% endif %}
-
-  <header class="masthead">
-    <a href="{{ '../' if isArticle else '' }}index.html" class="masthead__link">
-      <h1 class="masthead__title">The Fortnightly Circular</h1>
-      <span class="masthead__subtitle">Conducted for the Benefit of Persons of Discernment &amp; Enquiring Disposition</span>
-    </a>
-    <div class="masthead__meta">
-      <span>Vol. {{ site.volume }}</span>
-      <span>No. {{ site.issue }}</span>
-      <span>{{ site.season }}</span>
-    </div>
-  </header>
 
   {{ content | safe }}
 
-  <footer class="site-footer">
+  <section class="subscribe-section" aria-label="Subscribe">
     <div class="container">
-      <div class="site-footer__subscribe">
-        <h2 class="site-footer__subscribe-heading">Subscribe to the Circular</h2>
-        <p class="site-footer__subscribe-dek">New numbers delivered fortnightly, by electronic post.</p>
+      <div class="subscribe-section__inner">
+        <h2 class="subscribe-section__heading">Subscribe to the Circular</h2>
+        <p class="subscribe-section__dek">New numbers delivered fortnightly, by electronic post.</p>
         <form class="subscribe-form" id="subscribe-form"
               method="post"
               action="{{ site.platformApiUrl }}/subscribe"
@@ -55,21 +48,24 @@
         </form>
         <div class="subscribe-form__status" id="subscribe-status" aria-live="polite"></div>
       </div>
-      <div class="site-footer__meta">
-        <span class="site-footer__brand">The Fortnightly Circular</span>
-        Vol. {{ site.volume }} &middot; No. {{ site.issue }} &middot; {{ site.season }}
-        &nbsp;&middot;&nbsp;
-        <a href="{{ '../' if isArticle else '' }}contributors.html">Contributors</a>
-        <div class="site-footer__colophon">
-          <span>Published by</span>
-          <a href="https://proofbound.com" class="site-footer__colophon-link" aria-label="Proofbound">
-            <img src="https://brand.proofbound.com/proofbound-design-system/assets/proofbound-logo.svg" alt="" class="site-footer__colophon-logo" width="18" height="18">
-            <span class="site-footer__colophon-name">Proofbound</span>
-          </a>
-        </div>
-      </div>
     </div>
-  </footer>
+  </section>
+
+  <div class="container">
+    <footer class="pb-footer">
+      <a class="pb-footer__brand" href="https://proofbound.com">
+        <span class="pb-footer__mark">
+          <svg width="20" height="20" viewBox="0 0 80 80"><polygon points="40,5 65,22.5 65,57.5 40,75 15,57.5 15,22.5" fill="currentColor"/><path d="M22 30 L37 33 L37 50 L22 47 Z" fill="#FAF7F1"/><path d="M43 33 L58 30 L58 47 L43 50 Z" fill="#FAF7F1"/></svg>
+        </span>
+        <span class="pb-footer__wordmark">Proofbound</span>
+      </a>
+      <div class="pb-footer__meta">
+        <a href="{{ '../' if isArticle else '' }}contributors.html">Contributors</a>
+        <span>·</span>
+        © 2026 Ensembio, Inc.
+      </div>
+    </footer>
+  </div>
 
   <p class="print-footer">The Fortnightly Circular &middot; No. {{ site.issue }} &middot; {{ site.season }}</p>
 

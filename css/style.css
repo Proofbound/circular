@@ -101,73 +101,18 @@ hr.full {
 }
 
 /* ============================================================
-   MASTHEAD
+   PROOFBOUND DESIGN-SYSTEM CHROME (.pb-masthead / .pb-footer)
+   ------------------------------------------------------------
+   The site header and footer are owned by the design system at
+   brand.proofbound.com/proofbound-design-system/proofbound.css.
+   These rules only suppress Circular's global link underline
+   inside the chrome and tag the live sign-in link.
    ============================================================ */
-.masthead {
-  text-align: center;
-  padding: var(--space-lg) var(--space-lg) var(--space-md);
-  border-bottom: 1px solid var(--color-rule);
-}
-.masthead__link {
-  display: block;
-  color: var(--color-ink);
-  border-bottom: none;
-}
-.masthead__link:hover { color: var(--color-accent); border-bottom: none; }
-.masthead__title {
-  font-family: var(--font-display);
-  font-size: var(--font-size-masthead);
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1;
-  color: var(--color-ink);
-}
-.masthead__subtitle {
-  display: block;
-  margin-top: var(--space-sm);
-  font-family: var(--font-body);
-  font-style: italic;
-  font-size: var(--font-size-subhead);
-  font-weight: 400;
-  color: var(--color-muted);
-  letter-spacing: 0;
-  text-transform: none;
-}
-.masthead__meta {
-  margin-top: var(--space-md);
-  font-family: var(--font-sans);
-  font-size: var(--font-size-small);
-  font-weight: 400;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-}
-.masthead__meta span + span::before {
-  content: ' · ';
-  margin: 0 0.4em;
-  color: var(--color-rule);
-}
-
-/* -- Thin top nav (article pages only) --------------------- */
-.topnav {
-  font-family: var(--font-sans);
-  font-size: var(--font-size-small);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-  padding: var(--space-sm) 0;
-  border-bottom: 1px solid var(--color-rule);
-  text-align: center;
-}
-.topnav a {
-  color: var(--color-muted);
-  border-bottom: none;
-}
-.topnav a:hover { color: var(--color-accent); }
-.topnav__sep { margin: 0 0.75em; color: var(--color-rule); }
-.topnav__signin { float: right; }
-.topnav__signin.signin--live { color: #2e7d32; }
+.pb-masthead a,
+.pb-footer a { border-bottom: none; }
+.pb-masthead a:hover,
+.pb-footer a:hover { border-bottom: none; }
+[data-signin].signin--live { color: #2e7d32; }
 
 /* ============================================================
    FRONT PAGE — cover story + "In This Number"
@@ -682,20 +627,20 @@ hr.full {
 }
 
 /* ============================================================
-   FOOTER
+   SUBSCRIBE SECTION (content, not site chrome)
    ============================================================ */
-.site-footer {
+.subscribe-section {
   border-top: 1px solid var(--color-rule);
   background: var(--color-paper);
   padding: var(--space-xl) 0 var(--space-lg);
   margin-top: var(--space-xl);
 }
-.site-footer__subscribe {
+.subscribe-section__inner {
   max-width: 34rem;
-  margin: 0 auto var(--space-xl);
+  margin: 0 auto;
   text-align: center;
 }
-.site-footer__subscribe-heading {
+.subscribe-section__heading {
   font-family: var(--font-display);
   font-size: var(--font-size-subhead);
   font-weight: 700;
@@ -703,7 +648,7 @@ hr.full {
   margin-bottom: var(--space-xs);
   letter-spacing: 0.03em;
 }
-.site-footer__subscribe-dek {
+.subscribe-section__dek {
   font-family: var(--font-body);
   font-style: italic;
   font-size: var(--font-size-small);
@@ -766,59 +711,6 @@ hr.full {
 .subscribe-form__status--success { color: #2e7d32; }
 .subscribe-form__status--error { color: var(--color-accent); }
 
-.site-footer__meta {
-  max-width: var(--measure);
-  margin: 0 auto;
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--color-rule);
-  font-family: var(--font-sans);
-  font-size: var(--font-size-caption);
-  letter-spacing: 0.08em;
-  color: var(--color-muted);
-  text-align: center;
-}
-.site-footer__meta a { color: var(--color-muted); border-bottom: none; }
-.site-footer__meta a:hover { color: var(--color-accent); }
-.site-footer__brand {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: var(--font-size-subhead);
-  color: var(--color-ink);
-  display: block;
-  margin-bottom: var(--space-xs);
-}
-.site-footer__colophon {
-  margin-top: var(--space-md);
-  padding-top: var(--space-sm);
-  border-top: 1px solid var(--color-rule);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
-  font-family: var(--font-sans);
-  font-size: var(--font-size-caption);
-  letter-spacing: 0.08em;
-  color: var(--color-muted);
-}
-.site-footer__colophon-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  color: var(--color-ink);
-  border-bottom: none;
-}
-.site-footer__colophon-link:hover { color: var(--color-accent); }
-.site-footer__colophon-logo {
-  height: 1em;
-  width: auto;
-  vertical-align: middle;
-}
-.site-footer__colophon-name {
-  font-family: var(--font-display);
-  font-style: italic;
-  letter-spacing: 0;
-}
-
 /* ============================================================
    RESPONSIVE
    ============================================================ */
@@ -833,8 +725,6 @@ hr.full {
 
 @media (max-width: 560px) {
   .container { padding: 0 var(--space-md); }
-  .masthead { padding: var(--space-md) var(--space-md) var(--space-sm); }
-  .masthead__subtitle { display: none; }
   .article-continuation {
     flex-direction: column;
     gap: var(--space-md);
@@ -853,12 +743,12 @@ hr.full {
    ============================================================ */
 @media print {
   body { background: white; color: black; }
-  .topnav, .site-footer, .in-this-number,
+  .pb-masthead__nav, .pb-footer, .subscribe-section, .in-this-number,
   .article-continuation, .subscribe-form,
   .previous-numbers, .cover-story__readmore { display: none; }
-  .masthead { border-bottom: 1px solid #000; padding: 1rem 0; }
-  .masthead__title { color: #000; font-size: 1.4rem; }
-  .masthead__subtitle, .masthead__meta { color: #333; }
+  .pb-masthead { border-bottom: 1px solid #000; padding: 1rem 0; }
+  .pb-endorsement__name { color: #000; font-size: 1.1rem; }
+  .pb-endorsement__tag { color: #333; }
   .article-body, .article-header { max-width: 100%; font-size: 11pt; }
   a { color: black; border-bottom: none; }
   .article-body a[href]::after {
