@@ -1,6 +1,6 @@
-# Karam & Sprague's Fortnightly Circular
+# The Fortnightly Circular
 
-A static online magazine of high-quality think pieces and light reading, styled like a high-brow Victorian periodical. Published by Sami J. Karam and Richard Sprague.
+A static online magazine of high-quality think pieces and light reading, styled like a high-brow Victorian periodical. Part of the [Proofbound](https://proofbound.com) family of products.
 
 Live at [proofbound.com/circular](https://proofbound.com/circular)
 

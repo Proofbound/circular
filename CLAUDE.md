@@ -1,9 +1,9 @@
-# Karam & Sprague's Fortnightly Circular
+# The Fortnightly Circular
 
-**Last Updated**: April 11, 2026
-**Status**: Migrated off Netlify/Firebase. Platform API Phase 1 (subscribe / unsubscribe / health) implemented server-side and wired in `circular.js`. Newsletter dispatch (Phase 2) is deferred — sends are manual until then. See [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md) for the full plan and remaining deploy steps.
+**Last Updated**: April 26, 2026
+**Status**: Part of the Proofbound family of products. Platform API Phase 1 (subscribe / unsubscribe / health) implemented server-side and wired in `circular.js`. Newsletter dispatch (Phase 2) is deferred — sends are manual until then. See [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md) for the full plan and remaining deploy steps.
 
-A static online magazine — high-quality think pieces and light reading, styled like a high-brow Victorian periodical. Published by Sami J. Karam and Richard Sprague.
+A static online magazine — high-quality think pieces and light reading, styled like a high-brow Victorian periodical. Published by Proofbound as part of its family of products.
 
 ## Architecture
 
@@ -26,7 +26,7 @@ The platform router lives inside cc-template-api on port 8001 — no separate se
 - **Auth**: Uses Supabase JS client directly (same project as the book app). No auth endpoints in the platform API — Supabase client handles signup/login/session. (Wiring still TODO in `circular.js`; see "Auth & Subscriptions" below.)
 - **Email dispatch**: Phase 2, currently deferred. Until it ships, newsletter sends are done manually (Resend dashboard or one-off script reading from `email_subscriptions`). When it lands it will route through the existing `send-notification` Edge Function or Resend's batch API — see §4 of [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md).
 - **User accounts**: Shared with the book app. One Supabase project, one `auth.users` table. A Circular subscriber who later creates a book-app account is the same user — `email_subscriptions.user_id` is backfilled automatically.
-- **Serverless functions**: None. The old Netlify Functions and Firebase dependencies are deleted and must not come back.
+- **Serverless functions**: None. Circular is a pure static site — any dynamic behavior belongs in the monorepo platform API.
 
 ## Build
 
@@ -86,14 +86,6 @@ leadImage:
 ```
 
 The index template prefixes the cover story's image with `articles/` automatically, so the same bare filename works in both contexts.
-
-### Deleted (migration from prototype)
-
-These files/directories no longer exist and must not be recreated:
-
-- `netlify.toml` — no Netlify dependency
-- `netlify/functions/` — all serverless logic moved to monorepo platform API
-- Any Firebase SDK imports or config — replaced by Supabase JS client
 
 ## Adding a New Article
 
@@ -187,7 +179,7 @@ Server contract details (rate limits, response shapes, validation rules) are in 
 
 ### Connectivity check
 
-On page load, `initSigninStatus()` in `circular.js` pings `<platformApiUrl>/health`. If it returns 200, the Sign In button gets a green indicator. This replaces the old Netlify hello function ping. Supabase Auth session-checking is stubbed out (`TODO` block) — needs wiring before login actually works.
+On page load, `initSigninStatus()` in `circular.js` pings `<platformApiUrl>/health`. If it returns 200, the Sign In button gets a green indicator. Supabase Auth session-checking is stubbed out (`TODO` block) — needs wiring before login actually works.
 
 ## Design Principles
 
@@ -201,7 +193,7 @@ On page load, `initSigninStatus()` in `circular.js` pings `<platformApiUrl>/heal
 
 1. **No serverless functions in this repo.** All dynamic behavior lives in the monorepo platform API.
 2. **No Firebase.** Auth is Supabase. Subscriptions are the platform API.
-3. **No Netlify.** Hosting is DO App Platform. No `netlify.toml`, no Netlify CLI.
+3. **Hosting is DO App Platform.**
 4. **Relative asset paths only.** The Cloudflare Worker strips `/circular` prefix — absolute paths break.
 5. **Shared user identity.** Use the same Supabase project URL and anon key as the book app. Never create a separate Supabase project.
 6. **Content is king.** The articles in `src/articles/` are the only irreplaceable asset. Everything else can be rebuilt.
