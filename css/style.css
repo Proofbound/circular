@@ -126,8 +126,11 @@ hr.full {
 }
 .circular-masthead__art {
   display: block;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
+  max-height: 220px;
   height: auto;
+  margin: 0 auto;
 }
 
 /* ============================================================
@@ -747,6 +750,10 @@ hr.full {
   .circular-masthead {
     width: min(100%, 390px);
     margin-top: var(--space-sm);
+  }
+  .circular-masthead__art {
+    width: 100%;
+    max-height: none;
   }
   .article-continuation {
     flex-direction: column;

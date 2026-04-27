@@ -295,7 +295,7 @@ Files created:
 
 ## Integration Sequence
 
-Ship in two phases. Phase 1 is the subscription slice — it unblocks Circular's migration off Netlify/Firebase immediately. Phase 2 is newsletter dispatch, which carries real operational complexity and should not hold up phase 1.
+Ship in two phases. Phase 1 is the subscription slice — it gets Circular's subscribe flow live on the platform API immediately. Phase 2 is newsletter dispatch, which carries real operational complexity and should not hold up phase 1.
 
 ### Phase 1 — Subscription slice + health
 
@@ -311,9 +311,8 @@ Server-side work is **complete and merged on branch `infra`**. Remaining steps a
 8. ⏳ **Apply the migration** — `cd shared && supabase db push` (staged, awaiting explicit run)
 9. ⏳ **Set `TURNSTILE_SECRET_KEY`** on the production cc-template-api container (without it, any subscribe request is accepted)
 10. ⏳ **Deploy to droplet** — subscribe/unsubscribe/health go live
-11. ⏳ **Update Circular's `circular.js`** — replace Netlify/Firebase signup with `POST /v1/platform/subscribe`; auth via Supabase JS SDK (see "Client Integration Guide" at the top of this doc)
+11. ⏳ **Update Circular's `circular.js`** — wire signup to `POST /v1/platform/subscribe`; auth via Supabase JS SDK (see "Client Integration Guide" at the top of this doc)
 12. ⏳ **Test end-to-end** — subscribe, verify in DB, verify unsubscribe idempotency
-13. ⏳ **Delete Circular's Netlify site and Firebase project**
 
 ### Phase 2 — Newsletter dispatch (deferred)
 
