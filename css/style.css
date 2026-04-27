@@ -114,6 +114,22 @@ hr.full {
 .pb-footer a:hover { border-bottom: none; }
 [data-signin].signin--live { color: #2e7d32; }
 
+.circular-masthead {
+  display: block;
+  width: min(100%, 1100px);
+  margin: var(--space-md) auto var(--space-lg);
+  border-bottom: none;
+}
+.circular-masthead:hover { border-bottom: none; }
+.circular-masthead__picture {
+  display: block;
+}
+.circular-masthead__art {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* ============================================================
    FRONT PAGE — cover story + "In This Number"
    ============================================================ */
@@ -715,6 +731,9 @@ hr.full {
    RESPONSIVE
    ============================================================ */
 @media (max-width: 860px) {
+  .circular-masthead {
+    margin-bottom: var(--space-md);
+  }
   .front-page {
     grid-template-columns: 1fr;
     gap: var(--space-lg);
@@ -725,6 +744,10 @@ hr.full {
 
 @media (max-width: 560px) {
   .container { padding: 0 var(--space-md); }
+  .circular-masthead {
+    width: min(100%, 390px);
+    margin-top: var(--space-sm);
+  }
   .article-continuation {
     flex-direction: column;
     gap: var(--space-md);
@@ -747,6 +770,7 @@ hr.full {
   .article-continuation, .subscribe-form,
   .previous-numbers, .cover-story__readmore { display: none; }
   .pb-masthead { border-bottom: 1px solid #000; padding: 1rem 0; }
+  .circular-masthead { width: 100%; max-width: 16cm; margin: 1rem auto; }
   .pb-endorsement__name { color: #000; font-size: 1.1rem; }
   .pb-endorsement__tag { color: #333; }
   .article-body, .article-header { max-width: 100%; font-size: 11pt; }

@@ -18,8 +18,6 @@ _site/
 dist/
 .cache/
 
-# Netlify
-.netlify/
 deno.lock
 
 # Environment

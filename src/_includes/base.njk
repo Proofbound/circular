@@ -26,6 +26,9 @@
         Vol. {{ site.volume }}<span>·</span>No. {{ site.issue }}<span>·</span>{{ site.season }}<span>·</span><a href="{{ '../' if isArticle else '' }}contributors.html"{% if title == 'Contributors' %} aria-current="page"{% endif %}>Contributors</a><span>·</span><a href="{{ site.signInUrl }}" data-signin>Sign in</a>
       </nav>
     </header>
+    <a class="circular-masthead" href="{{ '../' if isArticle else '' }}index.html" aria-label="The Fortnightly Circular home">
+      {% include "circular-masthead.njk" %}
+    </a>
   </div>
 
   {{ content | safe }}

@@ -1,0 +1,21 @@
+<picture class="circular-masthead__picture">
+  <source
+    media="(max-width: 640px)"
+    srcset="{{ '../' if isArticle else '' }}assets/masthead-victorian-mobile.webp"
+    type="image/webp">
+  <source
+    media="(max-width: 640px)"
+    srcset="{{ '../' if isArticle else '' }}assets/masthead-victorian-mobile.png"
+    type="image/png">
+  <source
+    srcset="{{ '../' if isArticle else '' }}assets/masthead-victorian-wide.webp"
+    type="image/webp">
+  <img
+    class="circular-masthead__art"
+    src="{{ '../' if isArticle else '' }}assets/masthead-victorian-wide.png"
+    alt="The Fortnightly Circular"
+    width="2098"
+    height="749"
+    decoding="async"
+    fetchpriority="high">
+</picture>
