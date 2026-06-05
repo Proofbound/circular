@@ -54,7 +54,15 @@ from public.newsletter_dispatches
 order by created_at desc;
 ```
 
-Retry semantics: a `completed` dispatch is a no-op on re-run; a `partial` dispatch retries **only the failed recipients**.
+Each row in `newsletter_dispatches` is one send (subject, HTML, counts). The per-recipient detail lives in `public.newsletter_dispatch_recipients` (`dispatch_id`, `email`, `status`, `error`, `sent_at`) — when a send starts, the then-active audience is *sealed* into this table, and the dispatch fans out against that frozen list. To see exactly who failed and why on a given send:
+
+```sql
+select email, status, error, sent_at
+from public.newsletter_dispatch_recipients
+where dispatch_id = '<dispatch-uuid>' and status <> 'sent';
+```
+
+Retry semantics: a `completed` dispatch is a no-op on re-run; a `partial` dispatch retries **only the failed recipients** — it walks the sealed `newsletter_dispatch_recipients` rows (not the live `email_subscriptions` list), so someone subscribing or unsubscribing after the send started doesn't change who that send targets.
 
 ## Idempotency caveat
 
