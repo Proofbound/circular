@@ -15,8 +15,10 @@ proofbound.com/circular         proofbound.com/api/v1/platform
         │                               │
         ├─ Supabase JS client ─────→ Supabase Auth (direct, same project as book app)
         ├─ POST /subscribe ────────→ email_subscriptions table (service-role)
-        ├─ POST /unsubscribe ──────→ email_subscriptions table (idempotent)
+        ├─ POST /unsubscribe ──────→ email_subscriptions table (HMAC-token gated)
         └─ GET  /health ───────────→ connectivity check (green dot in nav)
+
+  unsubscribe.html (static page) ─ POST /unsubscribe with email+product+token ─┘
 ```
 
 The platform router lives inside cc-template-api on port 8001 — no separate service or container. Public endpoints are listed in `UNPROTECTED_PATHS` in `hybrid_auth.py` and rate-limited via slowapi (10/min subscribe, 30/min unsubscribe, per-IP).
@@ -169,10 +171,22 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   turnstile_token: '...',      // Cloudflare Turnstile token — wired and live (read from the widget)
 }
 
-// Unsubscribe — same shape minus turnstile/honeypot, idempotent (always 200)
+// Unsubscribe — request body shape (no turnstile/honeypot)
+{
+  email: 'user@example.com',
+  product: 'circular',
+  token: '...',                // HMAC signature from the unsubscribe link — REQUIRED
+}
+// Valid token → 200 (idempotent, 200 even if already gone). Missing/forged token → 400.
 ```
 
 The `<form>` in [src/_includes/base.njk](src/_includes/base.njk) is also hardened with `method="post"`, `action="{{ site.platformApiUrl }}/subscribe"`, and `onsubmit="return false"` so a JS failure cannot fall back to a native GET and leak the email into a URL query string. The JS handler calls `e.preventDefault()` and runs the real fetch — the form attributes are a safety net, not the happy path.
+
+### Unsubscribe — token-gated page ([src/unsubscribe.njk](src/unsubscribe.njk))
+
+The unsubscribe footer in each newsletter links to `proofbound.com/circular/unsubscribe.html?email=…&product=circular&token=…`. The `token` is an HMAC of `(email, product)` minted by the monorepo when the email is sent (`_build_unsubscribe_url` in `platform_service.py`) and verified server-side on `/unsubscribe` — a missing or forged token is rejected with **400**, so an address can't be unsubscribed by anyone who merely knows it. `initUnsubscribe()` in [js/circular.js](js/circular.js) reads the three query params, reveals a confirm button **only** when a token is present, and POSTs `{email, product, token}`. Without a token the page shows guidance (use the link in an issue) rather than a forgeable bare-email form — a direct visitor cannot self-unsubscribe by design. The page sets `hideSubscribe: true` so the footer Subscribe CTA is suppressed (gated in [base.njk](src/_includes/base.njk)).
+
+**Deploy note:** the API needs `UNSUBSCRIBE_TOKEN_SECRET` set in production (it fails closed if unset); the same secret signs and verifies, so deploy the API as one unit and never repoint the footer URL ahead of the verifier.
 
 **Turnstile is wired and live.** The subscribe form in [src/_includes/base.njk](src/_includes/base.njk) renders a Cloudflare Turnstile widget (site key `turnstileSiteKey` from `site.json`), and `circular.js` reads the token and sends it as `turnstile_token`. The production cc-template-api has `TURNSTILE_SECRET_KEY` set, so the token is verified server-side on every subscribe.
 

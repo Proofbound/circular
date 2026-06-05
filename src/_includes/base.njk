@@ -33,6 +33,7 @@
 
   {{ content | safe }}
 
+  {% if not hideSubscribe %}
   <section class="subscribe-section" aria-label="Subscribe">
     <div class="container">
       <div class="subscribe-section__inner">
@@ -53,6 +54,7 @@
       </div>
     </div>
   </section>
+  {% endif %}
 
   <div class="container">
     <footer class="pb-footer">

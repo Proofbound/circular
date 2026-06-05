@@ -1,0 +1,48 @@
+---
+layout: base.njk
+permalink: "unsubscribe.html"
+title: "Unsubscribe"
+hideSubscribe: true
+---
+<main>
+  <div class="container">
+    <div class="contributors-page">
+
+      <header class="contributors-page__header">
+        <h1 class="contributors-page__title">Take Your Leave</h1>
+        <p class="contributors-page__dek">
+          We are sorry to see you go. Confirm below and we shall trouble your
+          correspondence no further.
+        </p>
+      </header>
+
+      <hr class="ornamental">
+
+      <!-- Confirm state: revealed by circular.js only when a valid unsubscribe
+           link (carrying a signed token) is present. -->
+      <div id="unsubscribe-confirm-block" hidden>
+        <p style="text-align:center;">
+          Unsubscribe <strong id="unsubscribe-email"></strong> from
+          <em>The Fortnightly Circular</em>?
+        </p>
+        <div class="subscribe-form" style="justify-content:center;">
+          <button type="button" id="unsubscribe-confirm">Yes, unsubscribe me</button>
+        </div>
+        <div class="subscribe-form__status" id="unsubscribe-status" aria-live="polite"></div>
+      </div>
+
+      <!-- Guidance state: shown by default (no token). A direct visitor cannot
+           self-unsubscribe by typing an address — that would let anyone remove
+           anyone. The signed link in each issue is the only path. -->
+      <div id="unsubscribe-guidance">
+        <p style="text-align:center;">
+          To unsubscribe, please use the <strong>Unsubscribe</strong> link at the
+          foot of any issue we have sent you by electronic post. That link is
+          unique to your subscription, so it is the only way we can be certain the
+          request is yours.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</main>
