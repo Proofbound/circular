@@ -1,7 +1,7 @@
 # The Fortnightly Circular
 
 **Last Updated**: April 26, 2026
-**Status**: Part of the Proofbound family of products. Platform API Phase 1 (subscribe / unsubscribe / health) implemented server-side and wired in `circular.js`. Newsletter dispatch (Phase 2) is deferred — sends are manual until then. See [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md) for the full plan and remaining deploy steps.
+**Status**: Part of the Proofbound family of products. Platform API Phase 1 (subscribe / unsubscribe / health) is live in production and wired in `circular.js` — the subscribe form, honeypot, and Cloudflare Turnstile are all functional. Newsletter dispatch (Phase 2) is also **live**: the `send-newsletter` endpoint and a GitHub Actions workflow in the monorepo handle sends. Issues are *manually authored* (write a digest markdown file) but *automatically dispatched* (committing it triggers the workflow). See [NEWSLETTER.md](NEWSLETTER.md) for the send flow and [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md) for the platform plan.
 
 A static online magazine — high-quality think pieces and light reading, styled like a high-brow Victorian periodical. Published by Proofbound as part of its family of products.
 
@@ -24,7 +24,7 @@ The platform router lives inside cc-template-api on port 8001 — no separate se
 ### What Circular Does NOT Own
 
 - **Auth**: Uses Supabase JS client directly (same project as the book app). No auth endpoints in the platform API — Supabase client handles signup/login/session. (Wiring still TODO in `circular.js`; see "Auth & Subscriptions" below.)
-- **Email dispatch**: Phase 2, currently deferred. Until it ships, newsletter sends are done manually (Resend dashboard or one-off script reading from `email_subscriptions`). When it lands it will route through the existing `send-notification` Edge Function or Resend's batch API — see §4 of [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md).
+- **Email dispatch**: Live, owned by the monorepo. The `POST /v1/platform/email/send-newsletter` endpoint (service-token gated) seals the active audience and fans out per-recipient via the `send-notification` Edge Function → Resend, injecting a per-recipient unsubscribe footer. A GitHub Actions workflow dispatches it when a digest markdown file is committed under `content/newsletters/circular/` in the monorepo. Issues are manually authored but automatically dispatched — see [NEWSLETTER.md](NEWSLETTER.md) for the flow and §4 of [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md) for background.
 - **User accounts**: Shared with the book app. One Supabase project, one `auth.users` table. A Circular subscriber who later creates a book-app account is the same user — `email_subscriptions.user_id` is backfilled automatically.
 - **Serverless functions**: None. Circular is a pure static site — any dynamic behavior belongs in the monorepo platform API.
 
@@ -156,7 +156,9 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 ### Subscriptions (platform API) — implemented in [js/circular.js](js/circular.js)
 
-`initSubscribe()` POSTs the modal form to `cfg.platformApiUrl + '/subscribe'` (default `https://proofbound.com/api/v1/platform`). The API base URL comes from `window.__CIRCULAR__` (set inline in base.njk from `site.json`) so local dev can override it.
+> **Sending newsletters to these subscribers:** see [NEWSLETTER.md](NEWSLETTER.md) for the manual-authoring / auto-dispatch flow.
+
+`initSubscribe()` POSTs the modal form to `cfg.platformApiUrl + '/subscribe'`. The API base URL comes from `window.__CIRCULAR__` (set inline in base.njk from `site.json`, where `platformApiUrl` is `https://app.proofbound.com/api/v1/platform`) so local dev can override it.
 
 ```javascript
 // Subscribe — request body shape
@@ -164,7 +166,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   email: 'user@example.com',
   product: 'circular',
   website: '',                 // honeypot — hidden input, must be empty
-  // turnstile_token: '...',   // TODO — required in production once TURNSTILE_SECRET_KEY is set
+  turnstile_token: '...',      // Cloudflare Turnstile token — wired and live (read from the widget)
 }
 
 // Unsubscribe — same shape minus turnstile/honeypot, idempotent (always 200)
@@ -172,8 +174,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 The `<form>` in [src/_includes/base.njk](src/_includes/base.njk) is also hardened with `method="post"`, `action="{{ site.platformApiUrl }}/subscribe"`, and `onsubmit="return false"` so a JS failure cannot fall back to a native GET and leak the email into a URL query string. The JS handler calls `e.preventDefault()` and runs the real fetch — the form attributes are a safety net, not the happy path.
 
-**Known client gap** (server already supports it):
-- The subscribe form does **not** yet include a Cloudflare Turnstile widget or `turnstile_token` field. Once the production cc-template-api sets `TURNSTILE_SECRET_KEY`, every Circular subscribe will return `400 captcha_verification_failed` until this is wired.
+**Turnstile is wired and live.** The subscribe form in [src/_includes/base.njk](src/_includes/base.njk) renders a Cloudflare Turnstile widget (site key `turnstileSiteKey` from `site.json`), and `circular.js` reads the token and sends it as `turnstile_token`. The production cc-template-api has `TURNSTILE_SECRET_KEY` set, so the token is verified server-side on every subscribe.
 
 Server contract details (rate limits, response shapes, validation rules) are in the "Phase 1 — Client Integration Guide" at the top of [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md).
 

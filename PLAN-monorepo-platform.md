@@ -2,7 +2,7 @@
 
 **Last Updated**: April 10, 2026
 **Scope**: Cross-product platform endpoints in the ProofBound monorepo
-**Status**: **Phase 1 implemented** in cc-template-api (port 8001). Migration staged but not yet applied to the linked Supabase database — run `supabase db push` from `shared/` to apply. Phase 2 (newsletter dispatch) remains deferred.
+**Status**: **Phase 1 implemented and deployed** in cc-template-api (port 8001) — subscribe / unsubscribe / health are live in production and the `email_subscriptions` migration has been applied to the linked Supabase database. **Phase 2 (newsletter dispatch) is also implemented and deployed**: `POST /v1/platform/email/send-newsletter` answers in prod and a GitHub Actions workflow in the monorepo dispatches it from committed digest files. See [NEWSLETTER.md](NEWSLETTER.md) for the send flow. (The "deferred" notes below are historical — left for context but superseded by this status line.)
 
 ## Phase 1 — Client Integration Guide (for Circular and other products)
 
@@ -92,7 +92,7 @@ Shared auth is already solved by Supabase (client-side SDK, no server wrapper ne
 
 ### 1. Database: `email_subscriptions` table ✅ IMPLEMENTED
 
-Migration file: `shared/supabase/migrations/20260410215557_create_email_subscriptions.sql` (created via `supabase migration new create_email_subscriptions`). **Not yet applied to the linked DB** — run `cd shared && supabase db push` when ready.
+Migration file: `shared/supabase/migrations/20260410215557_create_email_subscriptions.sql` (created via `supabase migration new create_email_subscriptions`). **Applied to the linked DB** — the `email_subscriptions` table (plus the Phase 2 `newsletter_dispatches` table) exists in production.
 
 ```sql
 -- =============================================================================
@@ -206,7 +206,7 @@ All five controls wired in `routers/platform.py` and `services/platform_service.
 
 **Production checklist**: set `TURNSTILE_SECRET_KEY` on the cc-template-api container or the service will silently accept any subscribe request.
 
-#### `POST /v1/platform/email/send-newsletter` (service-token only) ⏸ DEFERRED — Phase 2
+#### `POST /v1/platform/email/send-newsletter` (service-token only) ✅ IMPLEMENTED & DEPLOYED — Phase 2
 
 Trigger a newsletter send for a given product. This endpoint requires the `API_ACCESS_TOKEN` bearer token (service-token auth). There is no admin role in the current auth middleware — `HybridAuthMiddleware` only distinguishes service-token (`request.state.user_id = None`) from user JWT. Service-token-only is the correct gate here; do not invent role enforcement for this.
 
@@ -226,7 +226,7 @@ Logic:
 
 **Alternative**: Call Resend directly from this endpoint instead of going through the Edge Function. The Edge Function route reuses existing infra and logging; direct Resend is simpler. Either works — pick based on whether you want newsletter sends tracked in the `notifications` table.
 
-### 4. Email Dispatch — Edge Function vs Direct Resend ⏸ DEFERRED — Phase 2
+### 4. Email Dispatch — Edge Function vs Direct Resend ✅ IMPLEMENTED & DEPLOYED — Phase 2 (Option A shipped)
 
 The existing Edge Function (`shared/supabase/functions/send-notification/index.ts`) is designed for **single-recipient transactional or anonymous sends** (line ~62). Each invocation handles one email to one recipient. It is not a bulk-send pipeline.
 
@@ -308,23 +308,21 @@ Server-side work is **complete and merged on branch `infra`**. Remaining steps a
 5. ✅ **Wire abuse controls** — slowapi rate limits, Turnstile verification, honeypot, 128-char email cap
 6. ✅ **Add localhost:8080 to CORS** in `cc_template_api/constants.py`
 7. ✅ **Tests** — 23 new unit tests (`test_platform_router.py`, `test_platform_service.py`), full cc-template-api unit suite green (714 tests)
-8. ⏳ **Apply the migration** — `cd shared && supabase db push` (staged, awaiting explicit run)
-9. ⏳ **Set `TURNSTILE_SECRET_KEY`** on the production cc-template-api container (without it, any subscribe request is accepted)
-10. ⏳ **Deploy to droplet** — subscribe/unsubscribe/health go live
-11. ⏳ **Update Circular's `circular.js`** — wire signup to `POST /v1/platform/subscribe`; auth via Supabase JS SDK (see "Client Integration Guide" at the top of this doc)
-12. ⏳ **Test end-to-end** — subscribe, verify in DB, verify unsubscribe idempotency
+8. ✅ **Apply the migration** — `email_subscriptions` is live in the linked DB
+9. ✅ **Set `TURNSTILE_SECRET_KEY`** on the production cc-template-api container — set; subscribe tokens are verified
+10. ✅ **Deploy to droplet** — subscribe/unsubscribe/health are live
+11. ✅ **Update Circular's `circular.js`** — signup wired to `POST /v1/platform/subscribe` with Turnstile token; auth via Supabase JS SDK
+12. ✅ **Test end-to-end** — verified in production (subscribe returns 200, rows land in `email_subscriptions`)
 
-### Phase 2 — Newsletter dispatch (deferred)
+### Phase 2 — Newsletter dispatch ✅ SHIPPED
 
-Deferred until phase 1 is proven in production and subscriber counts justify the operational work. Newsletter dispatch requires either extending the `send-notification` Edge Function (which is currently designed for single-recipient transactional sends, see §4) or calling Resend's batch API directly from Python. Either path needs batching, retry handling, and partial-failure accounting that phase 1 does not.
+Implemented and deployed via **Option A** (Edge Function per-recipient loop). `POST /v1/platform/email/send-newsletter` seals the active `product='circular'` audience, fans out per-recipient through the `send-notification` Edge Function → Resend, injects a per-recipient unsubscribe footer, and records each run in `newsletter_dispatches` (resume/idempotency-safe). A GitHub Actions workflow in the monorepo (`.github/workflows/newsletter-dispatch.yml`) triggers a send when a digest markdown file is committed under `content/newsletters/circular/`. Issue authoring is manual; dispatch is automatic — see [NEWSLETTER.md](NEWSLETTER.md).
 
-Until phase 2 ships, newsletter sends are done manually (Resend dashboard, Mailchimp, or a one-off script reading from `email_subscriptions`).
-
-1. Decide Option A (Edge Function per-recipient loop) vs Option B (direct Resend batch API)
-2. Implement `POST /v1/platform/email/send-newsletter` with service-token gate
-3. Add OpenAPI spec for the endpoint (inherits global `BearerAuth` — no override)
-4. If Option A: update the Edge Function type union and dispatch logic
-5. Deploy and send a test newsletter to a small allowlisted audience first
+1. ✅ Option A chosen (Edge Function per-recipient loop)
+2. ✅ `POST /v1/platform/email/send-newsletter` implemented with service-token gate
+3. ✅ OpenAPI spec for the endpoint (inherits global `BearerAuth`)
+4. ✅ Edge Function type union and dispatch logic updated for `circular_newsletter`
+5. ✅ Deployed; GitHub Actions workflow drives dispatch from committed digest files
 
 ## Critical Rules
 
