@@ -1,6 +1,6 @@
 # Sending a Circular Newsletter
 
-How to email a new issue to subscribers. The send pipeline is **live in production**. Authoring is manual (you write a digest by hand); dispatch is automatic (committing the file triggers a GitHub Actions workflow). There is intentionally **no generator** that builds the email from `src/articles/` — you write the digest yourself.
+How to email a new issue to subscribers. The send pipeline is **live in production** — first verified end-to-end on **2026-06-12** by the inaugural Vol. I, No. 1 send. (That first send initially failed: the pipeline had never actually been exercised in prod and three config gaps had to be fixed first — see *Production prerequisites* below.) Authoring is manual (you write a digest by hand); dispatch is automatic (committing the file triggers a GitHub Actions workflow). There is intentionally **no generator** that builds the email from `src/articles/` — you write the digest yourself.
 
 ## Where the machinery lives
 
@@ -11,6 +11,14 @@ Everything that *sends* mail lives in **`proofbound-monorepo`**, not in this rep
 - **Send endpoint:** `POST /v1/platform/email/send-newsletter` (service-token gated) in `cc-template-api`. It seals the active audience for `product='circular'`, fans out per-recipient via the `send-notification` Edge Function → Resend (`Circular <circular@proofbound.com>`), auto-injects a per-recipient unsubscribe footer, and is resume/idempotency-safe.
 
 Circular itself (this repo) owns **zero** send code. It only collects subscribers via the subscribe form.
+
+## Production prerequisites
+
+These are *not* automatic — they live on the monorepo side and were the three gaps that blocked the inaugural send. If a send fails, check these first:
+
+1. **GitHub Actions secret `PROOFBOUND_API_ACCESS_TOKEN`** (repo `Proofbound/proofbound-monorepo`) must equal the cc-template-api `API_ACCESS_TOKEN`. The dispatch workflow sends it as the bearer; if unset the API returns **401** (`Missing …`).
+2. **`UNSUBSCRIBE_TOKEN_SECRET` must reach the cc-template-api container.** It's read via raw `os.getenv` and fails closed (`"UNSUBSCRIBE_TOKEN_SECRET is not set"`). The prod container uses an explicit `environment:` allowlist in `docker-compose.production.yml` (no `env_file:`), so it's **not enough to put it in `.env`** — it must also be listed there (`- UNSUBSCRIBE_TOKEN_SECRET=${UNSUBSCRIBE_TOKEN_SECRET}`). Same rule for any other raw-`os.getenv` secret on the send path.
+3. **A valid Supabase service key** (`SUPABASE_SECRET_KEY` / `SUPABASE_SERVICE_ROLE_KEY`) on the container — the API calls the `send-notification` Edge Function (`verify_jwt: true`), which 401s on a missing/stale key.
 
 ## How to send an issue (manual flow)
 

@@ -1,7 +1,7 @@
 # The Fortnightly Circular
 
-**Last Updated**: April 26, 2026
-**Status**: Part of the Proofbound family of products. Platform API Phase 1 (subscribe / unsubscribe / health) is live in production and wired in `circular.js` — the subscribe form, honeypot, and Cloudflare Turnstile are all functional. Newsletter dispatch (Phase 2) is also **live**: the `send-newsletter` endpoint and a GitHub Actions workflow in the monorepo handle sends. Issues are *manually authored* (write a digest markdown file) but *automatically dispatched* (committing it triggers the workflow). See [NEWSLETTER.md](NEWSLETTER.md) for the send flow and [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md) for the platform plan.
+**Last Updated**: June 12, 2026
+**Status**: Part of the Proofbound family of products. Platform API Phase 1 (subscribe / unsubscribe / health) is live in production and wired in `circular.js` — the subscribe form and honeypot are functional, and a Cloudflare Turnstile widget renders client-side. **Server-side Turnstile verification is NOT currently enforced in prod** (see the Turnstile note below), so automated bot signups do get through. Newsletter dispatch (Phase 2) is **live** — first verified end-to-end on **2026-06-12** by the inaugural send, which surfaced and fixed three prod-config gaps (see [NEWSLETTER.md](NEWSLETTER.md) → *Production prerequisites*). The `send-newsletter` endpoint and a GitHub Actions workflow in the monorepo handle sends; issues are *manually authored* (write a digest markdown file) but *automatically dispatched* (committing it triggers the workflow). See [NEWSLETTER.md](NEWSLETTER.md) for the send flow and [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md) for the platform plan.
 
 A static online magazine — high-quality think pieces and light reading, styled like a high-brow Victorian periodical. Published by Proofbound as part of its family of products.
 
@@ -168,7 +168,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   email: 'user@example.com',
   product: 'circular',
   website: '',                 // honeypot — hidden input, must be empty
-  turnstile_token: '...',      // Cloudflare Turnstile token — wired and live (read from the widget)
+  turnstile_token: '...',      // Cloudflare Turnstile token — wired client-side; NOT enforced server-side (see Turnstile note)
 }
 
 // Unsubscribe — request body shape (no turnstile/honeypot)
@@ -188,7 +188,7 @@ The unsubscribe footer in each newsletter links to `proofbound.com/circular/unsu
 
 **Deploy note:** the API needs `UNSUBSCRIBE_TOKEN_SECRET` set in production (it fails closed if unset); the same secret signs and verifies, so deploy the API as one unit and never repoint the footer URL ahead of the verifier.
 
-**Turnstile is wired and live.** The subscribe form in [src/_includes/base.njk](src/_includes/base.njk) renders a Cloudflare Turnstile widget (site key `turnstileSiteKey` from `site.json`), and `circular.js` reads the token and sends it as `turnstile_token`. The production cc-template-api has `TURNSTILE_SECRET_KEY` set, so the token is verified server-side on every subscribe.
+**Turnstile is wired client-side but NOT enforced server-side.** The subscribe form in [src/_includes/base.njk](src/_includes/base.njk) renders a Cloudflare Turnstile widget (site key `turnstileSiteKey` from `site.json`), and `circular.js` reads the token and sends it as `turnstile_token`. **However**, the production cc-template-api does **not** have `TURNSTILE_SECRET_KEY` set, and `verify_turnstile()` fails *open* when the secret is unset (returns `True`) — so the token is effectively unchecked. Confirmed on 2026-06-12 by bot signups landing in `email_subscriptions` with `product='0'` and fuzzed emails. Actually enforcing it (set `TURNSTILE_SECRET_KEY` **and** validate `product` against an allowlist, since the endpoint accepts any string) is tracked in monorepo bead `proofbound_monorepo-hstk`.
 
 Server contract details (rate limits, response shapes, validation rules) are in the "Phase 1 — Client Integration Guide" at the top of [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md).
 
