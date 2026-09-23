@@ -1,0 +1,15 @@
+[
+  {
+    "id": "vol1-no1",
+    "volume": "I",
+    "number": "1",
+    "season": "Spring 2026",
+    "note": "The inaugural number."
+  },
+  {
+    "id": "vol1-no2",
+    "volume": "I",
+    "number": "2",
+    "season": "Fall 2026"
+  }
+]

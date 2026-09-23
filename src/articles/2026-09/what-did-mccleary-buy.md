@@ -5,9 +5,10 @@ section: "Analysis"
 subsection: "Education & Policy"
 dek: "The Seattle Times asks whether Washington is meeting its constitutional commitment to education. The court answered that in 2018 by counting dollars. A better question is whether the children learned anything, and on the one test that is the same in every state, the answer so far is no."
 author: "R.W. Calder"
-pubDate: "Autumn 2026"
+pubDate: "Fall 2026"
 issue: "vol1-no2"
-order: 13
+order: 1
+featured: true
 permalink: "articles/{{ page.fileSlug }}.html"
 ---
 

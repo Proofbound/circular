@@ -2,12 +2,19 @@
 layout: base.njk
 permalink: "index.html"
 ---
-{% set analysis = collections.articles | selectattr("data.section", "equalto", "Analysis") %}
-{% set lightReading = collections.articles | selectattr("data.section", "equalto", "Light Reading") %}
-{% set featured = collections.articles | selectattr("data.featured", "equalto", true) | first %}
+{# The front page shows only the current number (site.currentIssue).
+   Earlier numbers are reachable from "Previous Numbers" below and
+   from back-issues.html. #}
+{% set current = collections.articles | selectattr("data.issue", "equalto", site.currentIssue) %}
+{% set analysis = current | selectattr("data.section", "equalto", "Analysis") %}
+{% set lightReading = current | selectattr("data.section", "equalto", "Light Reading") %}
+{% set featured = current | selectattr("data.featured", "equalto", true) | first %}
 {% if not featured %}
-  {% set featured = collections.articles | selectattr("data.order", "equalto", 1) | first %}
+  {% set featured = current | selectattr("data.order", "equalto", 1) | first %}
 {% endif %}
+{% set sidebarCount = (analysis | length) + (lightReading | length) - (1 if featured else 0) %}
+{% set backIssues = [] %}
+{% for iss in issues %}{% if iss.id != site.currentIssue %}{% set backIssues = (backIssues.push(iss), backIssues) %}{% endif %}{% endfor %}
 
 <main>
   <div class="container">
@@ -45,6 +52,7 @@ permalink: "index.html"
       </article>
 
       <!-- "In This Number" sidebar -->
+      {% if sidebarCount > 0 %}
       <aside class="in-this-number" aria-label="In this number">
         <div class="in-this-number__heading">In This Number</div>
 
@@ -82,12 +90,22 @@ permalink: "index.html"
         </ul>
         {% endif %}
       </aside>
+      {% endif %}
 
     </div>
 
     <section class="previous-numbers" aria-label="Previous numbers">
       <div class="previous-numbers__heading">Previous Numbers</div>
+      {% if backIssues | length %}
+      <ul class="previous-numbers__list">
+        {% for iss in backIssues | reverse %}
+        <li><a href="back-issues.html#{{ iss.id }}">Vol. {{ iss.volume }}, No. {{ iss.number }} &middot; {{ iss.season }}</a></li>
+        {% endfor %}
+      </ul>
+      <p><a href="back-issues.html">Browse all back numbers &rarr;</a></p>
+      {% else %}
       <p>This is the inaugural number. Future issues will be listed here.</p>
+      {% endif %}
     </section>
   </div>
 </main>

@@ -1,0 +1,55 @@
+---
+layout: base.njk
+permalink: "back-issues.html"
+title: "Back Numbers"
+---
+{# Every number the Circular has published, newest first, with its
+   articles in reading order. Issue metadata comes from _data/issues.json;
+   articles are matched on their `issue` frontmatter field. #}
+<main>
+  <div class="container">
+    <div class="back-issues-page">
+
+      <header class="back-issues-page__header">
+        <h1 class="back-issues-page__title">Back Numbers</h1>
+        <p class="back-issues-page__dek">
+          Every number of <em>The Fortnightly Circular</em> remains in print. The current number is on the <a href="index.html">front page</a>; earlier numbers are collected here in the order they appeared.
+        </p>
+      </header>
+
+      <hr class="ornamental">
+
+      {% for iss in issues | reverse %}
+      {% set issueArticles = collections.articles | selectattr("data.issue", "equalto", iss.id) %}
+      {% set cover = issueArticles | selectattr("data.featured", "equalto", true) | first %}
+      {% if not cover %}{% set cover = issueArticles | first %}{% endif %}
+      <section class="back-issue" id="{{ iss.id }}" aria-label="Vol. {{ iss.volume }}, No. {{ iss.number }}">
+        <header class="back-issue__header">
+          <div class="back-issue__number">Vol. {{ iss.volume }} &middot; No. {{ iss.number }}{% if iss.id == site.currentIssue %} &middot; <span class="back-issue__current">Current number</span>{% endif %}</div>
+          <h2 class="back-issue__season">{{ iss.season }}</h2>
+          {% if iss.note %}<p class="back-issue__note">{{ iss.note }}</p>{% endif %}
+        </header>
+
+        {% if issueArticles | length %}
+        <ol class="back-issue__list">
+          {% for article in issueArticles %}
+          <li class="back-issue__item{% if article.fileSlug == cover.fileSlug %} back-issue__item--cover{% endif %}">
+            <span class="back-issue__kicker">
+              {% if article.fileSlug == cover.fileSlug %}Cover story{% else %}{{ article.data.section }}{% endif %}{% if article.data.subsection %} &middot; {{ article.data.subsection }}{% endif %}
+            </span>
+            <a class="back-issue__title" href="articles/{{ article.fileSlug }}.html">{{ article.data.title }}</a>
+            <span class="back-issue__author">By {{ article.data.author }}</span>
+            {% if article.data.dek %}<span class="back-issue__dek">{{ article.data.dek | safe }}</span>{% endif %}
+          </li>
+          {% endfor %}
+        </ol>
+        {% else %}
+        <p class="back-issue__note">No articles have been published in this number yet.</p>
+        {% endif %}
+      </section>
+      {% if not loop.last %}<hr class="ornamental">{% endif %}
+      {% endfor %}
+
+    </div>
+  </div>
+</main>

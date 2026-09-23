@@ -2,7 +2,8 @@
 layout: base.njk
 isArticle: true
 ---
-{% set allArticles = collections.articles %}
+{# Continuation nav walks only the articles in this article's own number. #}
+{% set allArticles = collections.articles | selectattr("data.issue", "equalto", issue) %}
 {% set currentIndex = -1 %}
 {% for a in allArticles %}
   {% if a.url == page.url %}{% set currentIndex = loop.index0 %}{% endif %}
@@ -44,6 +45,7 @@ isArticle: true
 
       <p class="contributor-note">
         <em>{{ author }} writes for</em> The Fortnightly Circular.
+        {% for iss in issues %}{% if iss.id == issue %}<span class="contributor-note__issue">Vol. {{ iss.volume }}, No. {{ iss.number }} &middot; {{ iss.season }}{% if iss.id != site.currentIssue %} &middot; <a href="../back-issues.html#{{ iss.id }}">Back numbers</a>{% endif %}</span>{% endif %}{% endfor %}
       </p>
 
       {% if prevArticle or nextArticle %}

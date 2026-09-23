@@ -1,6 +1,6 @@
 # The Fortnightly Circular
 
-**Last Updated**: June 12, 2026
+**Last Updated**: September 23, 2026
 **Status**: Part of the Proofbound family of products. Platform API Phase 1 (subscribe / unsubscribe / health) is live in production and wired in `circular.js` — the subscribe form and honeypot are functional, and a Cloudflare Turnstile widget renders client-side. **Server-side Turnstile verification is NOT currently enforced in prod** (see the Turnstile note below), so automated bot signups do get through. Newsletter dispatch (Phase 2) is **live** — first verified end-to-end on **2026-06-12** by the inaugural send, which surfaced and fixed three prod-config gaps (see [NEWSLETTER.md](NEWSLETTER.md) → *Production prerequisites*). The `send-newsletter` endpoint and a GitHub Actions workflow in the monorepo handle sends; issues are *manually authored* (write a digest markdown file) but *automatically dispatched* (committing it triggers the workflow). See [NEWSLETTER.md](NEWSLETTER.md) for the send flow and [PLAN-monorepo-platform.md](PLAN-monorepo-platform.md) for the platform plan.
 
 A static online magazine — high-quality think pieces and light reading, styled like a high-brow Victorian periodical. Published by Proofbound as part of its family of products.
@@ -58,12 +58,14 @@ src/
     base.njk          # Base HTML shell (masthead, footer, scripts)
     article.njk       # Article page layout (nav, header, continuation, share)
   _data/
-    site.json          # Site config (title, volume, issue, editors, URLs)
+    site.json          # Site config (title, volume, issue, season, currentIssue, URLs)
+    issues.json        # Registry of every number published (id, volume, number, season)
     authors.js         # Author bios / metadata
   articles/            # Article content (markdown + YAML frontmatter)
     <issue>/           # e.g. 2026-04/ — one folder per issue
       <slug>.md
-  index.njk            # Index page template
+  index.njk            # Front page — current number only
+  back-issues.njk      # "Back Numbers" — every number, newest first, with its articles
   404.njk              # 404 page template
 css/style.css          # Stylesheet (passthrough copied to _site/)
 js/circular.js         # Auth, subscriptions, connectivity (calls platform API)
@@ -112,6 +114,17 @@ The index template prefixes the cover story's image with `articles/` automatical
 2. Run `npm run build` — continuation nav and index page update automatically
 3. For lead images, add `leadImage:` block to frontmatter (see existing articles for examples)
 
+## Issues (numbers)
+
+Each article's `issue` frontmatter (e.g. `vol1-no2`) ties it to an entry in [src/_data/issues.json](src/_data/issues.json). `site.currentIssue` in [src/_data/site.json](src/_data/site.json) names the number on the front page; `site.volume`, `site.issue`, and `site.season` are the masthead strings and must be kept in step with it by hand.
+
+- **Front page** ([src/index.njk](src/index.njk)) shows only `currentIssue`: cover story, sidebar, and the "Previous Numbers" list of every other issue in `issues.json` (linking to `back-issues.html#<id>`).
+- **Back Numbers** ([src/back-issues.njk](src/back-issues.njk), nav link in the masthead) lists every issue newest-first with its articles in `order`, cover story highlighted.
+- **Continuation nav** (prev/next) walks only within the article's own issue.
+- The sidebar is suppressed when the current number has no articles besides the cover story.
+
+**Starting a new number:** add an entry to `issues.json`, set `currentIssue` / `issue` / `season` in `site.json`, create `src/articles/<yyyy-mm>/`, and give the new articles `issue: "<id>"` with `order` starting at 1 and one `featured: true`. Old articles keep their `featured` flag — it only matters within their own issue.
+
 ## Content Organization
 
 Articles are organized by **section** on the index page:
@@ -133,14 +146,14 @@ Conventions:
 
 ### `featured` — which article is the cover story
 
-The front page renders **one** article as a full-width Barron's-style cover ([src/index.njk](src/index.njk)). Selection rules, in order:
+The front page renders **one** article as a full-width Barron's-style cover ([src/index.njk](src/index.njk)). Selection rules, in order (among articles in `site.currentIssue` only):
 
 1. If any article has `featured: true`, the first such article wins. There should only ever be one per issue.
 2. Otherwise the template falls back to `order: 1` (see [src/index.njk](src/index.njk) at the top, inside the `{% if not featured %}` block).
 
 The cover story is **excluded** from the sidebar list — the sidebar shows every _other_ article so nothing is duplicated on the page. If you flag an article as featured and still see it in the sidebar, rebuild; the filter is `{% if not article.data.featured %}` inside each `<ul>`.
 
-Cover-story choice is decoupled from reading order on purpose: you can put the most visually striking or topical piece at the top of the page while keeping a different article at `order: 1` if the editor prefers a different opening read. For vol1-no1 the flagship "Iran, Give Me My Country Back" carries both `order: 1` and `featured: true`.
+Cover-story choice is decoupled from reading order on purpose: you can put the most visually striking or topical piece at the top of the page while keeping a different article at `order: 1` if the editor prefers a different opening read. For vol1-no1 the flagship "Iran, Give Me My Country Back" carries both `order: 1` and `featured: true`; for vol1-no2 (Fall 2026) it is "What Did McCleary Buy?".
 
 Frontmatter fields `section`, `subsection`, `order`, and `featured` drive the index page sections, TOC sidebar, cover story, and article continuation nav automatically.
 
